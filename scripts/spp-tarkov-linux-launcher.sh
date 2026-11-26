@@ -213,5 +213,5 @@ fi
 
 echo
 echo "done. Close AnkerGames, start it again and press Play — the native SPT"
-echo "launcher should open, with a normal cursor. Set SPP_WINE_LAUNCHER=1 to"
-echo "use the Windows launcher under Wine instead."
+echo "launcher should open, with a normal cursor. SPP_WINE_LAUNCHER=1 starts the"
+echo "Windows launcher under Wine instead (it needs Windows paths in the config)."

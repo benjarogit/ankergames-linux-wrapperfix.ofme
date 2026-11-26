@@ -267,8 +267,9 @@ included):
 and inserts a marked block into `~/.local/bin/umu-run`: for `GAMEID=3089` and
 `Launcher.exe` it starts the native launcher, plus the native server if it is not
 running yet. `Play` then goes AnkerGames → `SPT.Launcher.Linux` →
-`EscapeFromTarkov.exe` under Proton. Set `SPP_WINE_LAUNCHER=1` to fall back to
-the Windows launcher under Wine.
+`EscapeFromTarkov.exe` under Proton. `SPP_WINE_LAUNCHER=1` starts the Windows
+launcher under Wine instead; it needs Windows-style paths in
+`LauncherSettings.json`, and the white window/cursor problem remains.
 
 ![Native SPT launcher on Linux](../../assets/spp-tarkov-launcher-linux.png)
 
