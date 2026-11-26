@@ -1,0 +1,93 @@
+# SPP Tarkov (3089) — native launcher instead of WebView2 under Wine
+
+Same prefix, Proton Experimental (wine-11.0), native server on
+`https://127.0.0.1:6969`.
+
+The Windows launcher is Photino/Blazor on WebView2. Under Wine its page is a D3D
+swapchain in a child window owned by `msedgewebview2.exe`, which does not
+present here — the window stays white. WebView2 also sets the cursor from the
+browser process, and Wine cannot map that handle to an X11 cursor (Wine bug
+58922), so the pointer is invisible. The package ships the same launcher as a
+native Linux build; that one renders with GTK/WebKit.
+
+## 1 · Play starts the native launcher
+
+`Play` in AnkerGames calls `umu-run Launcher.exe` with `GAMEID=3089`. The wrapper
+starts the native server (if needed) and then the native launcher:
+
+```
+SPP Tarkov: starting the native SPT launcher
+Photino.NET: "SPT Launcher".SetIconFile(/tmp/SPT.Launcher/spt-logo.ico)
+```
+
+The launcher window is `SPT Launcher - Server: Local Se…`, the Local Server card
+is ONLINE (`assets/spp-tarkov-launcher-linux.png`).
+
+## 2 · Launcher config
+
+`SPT_Runtime/user/Launcher/LauncherSettings.json` — the values the script writes:
+
+```json
+"GamePath": "/mnt/daten/Games/AnkerGames/Games/Prefixes/3089/drive_c/Games/SPP-Tarkov",
+"LinuxSettings": {
+  "PrefixPath": "/mnt/daten/Games/AnkerGames/Games/Prefixes/3089",
+  "UmuPath": "/usr/bin/umu-run",
+  "ProtonVersion": "/home/benny/.local/share/Steam/steamapps/common/Proton - Experimental",
+  "GameMode": false,
+  "DefaultEnv": "WINEDLLOVERRIDES=\"winhttp=n,b\""
+}
+```
+
+`UmuPath` must be the Python script (`/usr/bin/umu-run`), not the shell wrapper:
+the launcher runs `python3 <UmuPath> <cmd>` itself. With a missing path, **START
+GAME** fails silently and the launcher shows `Game Failed to start:`.
+
+## 3 · Start Game
+
+`ps` while the client is up:
+
+```
+/usr/bin/python3 /usr/bin/umu-run EscapeFromTarkov.exe -force-gfx-jobs native \
+  -token=6b080c6cfab4064643d4a994 \
+  -config={'BackendUrl':'https://127.0.0.1:6969','Version':'live','MatchingVersion':'live'}
+```
+
+The game window is titled `EscapeFromTarkov`. Its own log (`Logs/log_*/… application.log`):
+
+```
+Application awaken, updateQueue:'Update'
+NVIDIA Reflex is available on this machine, Status: NvReflex_OK.
+```
+
+## 4 · Client connected
+
+Game backend log (`… _backend.log`):
+
+```
+---> Request HTTPS, id [15]: URL: https://127.0.0.1:6969/client/game/profile/list
+<--- Response HTTPS, id [15]: URL: https://127.0.0.1:6969/client/game/profile/list
+---> Request HTTPS, id [21]: URL: https://127.0.0.1:6969/client/game/keepalive
+<--- Response HTTPS, id [21]: URL: https://127.0.0.1:6969/client/game/keepalive
+```
+
+Server log (`user/logs/spt/spt20261126.log`):
+
+```
+[Client-Anfrage] /client/globals
+[Client-Anfrage] /client/customization
+[Client-Anfrage] /client/trading/api/traderSettings
+[Client-Anfrage] /client/prestige/list
+```
+
+The client reaches the character screen and keeps the session alive
+(`assets/spp-tarkov-character.png`).
+
+## 5 · Why the WebView2 flags do not help
+
+`WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS=--disable-gpu` (environment variable and
+the `HKCU\Software\Policies\Microsoft\Edge\WebView2` policy) had no visible
+effect on the white window or the cursor. Photino passes its own
+`AdditionalBrowserArguments` when it creates the WebView2 environment, and
+WebView2 ignores the external arguments once the app supplies its own. Forcing
+`PROTON_USE_WINED3D=1` makes the Windows launcher paint, but the game inherits
+it and loses DXVK.

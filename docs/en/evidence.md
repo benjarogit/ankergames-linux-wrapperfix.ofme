@@ -120,3 +120,17 @@ prefix, then the self-signed certificate cannot be created under Wine, then the
 native build answers on the same port (`ping` → 200). Full excerpts:
 [`08-spp-tarkov-server.txt`](../../evidence/08-spp-tarkov-server.txt), context in
 [dotnet-installer.md](dotnet-installer.md).
+
+## 09 · SPP Tarkov: native launcher instead of WebView2
+
+```
+SPP Tarkov: starting the native SPT launcher
+Application awaken, updateQueue:'Update'
+---> Request HTTPS, id [21]: URL: https://127.0.0.1:6969/client/game/keepalive
+```
+
+Play → `SPT.Launcher.Linux` (GTK/WebKit) → `EscapeFromTarkov.exe` under Proton.
+The launcher config, the game process, the client's backend requests and why
+the WebView2 arguments cannot help are in
+[`09-spp-tarkov-linux-launcher.txt`](../../evidence/09-spp-tarkov-linux-launcher.txt),
+context in [dotnet-installer.md](dotnet-installer.md).

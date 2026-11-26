@@ -94,6 +94,9 @@ official runtime zips plus running the native `SPT.Server.Linux` — see
 Play also starts the installer, not the game, because the package contains
 nothing else. The wizard re-extracts 64.7 GB on every run;
 `spp-tarkov-play-target.sh` points Play at the installed SPT launcher instead.
+The Windows launcher itself stays white under Wine and loses the cursor
+(WebView2), so `spp-tarkov-linux-launcher.sh` makes Play run the native
+`SPT.Launcher.Linux` that ships with the package.
 
 ### Call of Duty: Modern Warfare II (2522)
 

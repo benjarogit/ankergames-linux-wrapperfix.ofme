@@ -96,7 +96,9 @@ siehe [dotnet-installer.md](dotnet-installer.md).
 Play startet außerdem den Installer statt des Spiels, weil das Paket nichts
 anderes enthält. Der Assistent entpackt bei jedem Lauf 64,7 GB neu;
 `spp-tarkov-play-target.sh` richtet Play stattdessen auf den installierten
-SPT-Launcher.
+SPT-Launcher. Der Windows-Launcher bleibt unter Wine weiß und verliert den
+Cursor (WebView2), deshalb lässt `spp-tarkov-linux-launcher.sh` Play den
+mitgelieferten nativen `SPT.Launcher.Linux` starten.
 
 ### Call of Duty: Modern Warfare II (2522)
 

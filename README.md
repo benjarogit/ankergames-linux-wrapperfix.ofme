@@ -109,8 +109,8 @@ Four documents, English and German. They build on each other:
 |---|---|---|---|
 | Root cause | [root-cause.md](docs/en/root-cause.md) | [ursachen.md](docs/de/ursachen.md) | how the builds work, defect A and B, reference code, verification |
 | Per game | [per-game.md](docs/en/per-game.md) | [spiele.md](docs/de/spiele.md) | the five-game matrix, marker layouts, titles that only look affected |
-| Evidence | [evidence.md](docs/en/evidence.md) | [evidenz.md](docs/de/evidenz.md) | annotated log excerpts 01–08 and the evidence sheet |
-| Tarkov fix | [dotnet-installer.md](docs/en/dotnet-installer.md) | [dotnet-installer.md](docs/de/dotnet-installer.md) | .NET runtimes, native SPT server, WebView2 flags, Play target |
+| Evidence | [evidence.md](docs/en/evidence.md) | [evidenz.md](docs/de/evidenz.md) | annotated log excerpts 01–09 and the evidence sheet |
+| Tarkov fix | [dotnet-installer.md](docs/en/dotnet-installer.md) | [dotnet-installer.md](docs/de/dotnet-installer.md) | .NET runtimes, native SPT server and launcher, Play target |
 
 Read the first three in order. The Tarkov fix is independent of the online-fix
 defects.
@@ -155,6 +155,14 @@ re-extracts 64.7 GB every time. One more script points Play at the SPT launcher:
 scripts/spp-tarkov-play-target.sh "<game dir>" "<prefix>"
 ```
 
+The Windows launcher under Wine stays white and the cursor disappears (WebView2
++ D3D in a child window, Wine bug 58922). The package also ships
+`SPT.Launcher.Linux`; this script makes Play start that one natively:
+
+```sh
+scripts/spp-tarkov-linux-launcher.sh "<prefix>"
+```
+
 ---
 
 ## Repository layout
@@ -164,14 +172,15 @@ README.md                          this page (English, default)
 README.de.md                       the same overview in German
 docs/en/                           root-cause, per-game, evidence, dotnet-installer
 docs/de/                           German versions of the same four documents
-evidence/                          raw log excerpts 01–08, referenced by the docs
+evidence/                          raw log excerpts 01–09, referenced by the docs
 scripts/fix-reference.sh           reference implementation of both online-fix fixes
 scripts/install-dotnet-runtime.sh  provisions .NET runtimes 10 into a prefix
 scripts/spp-tarkov-server.sh       starts the native SPT server (SPP Tarkov)
 scripts/spp-tarkov-play-target.sh  makes Play start the game instead of the installer
+scripts/spp-tarkov-linux-launcher.sh  makes Play start the native SPT launcher
 assets/before-after.svg            the pipeline diagram above
 assets/evidence.png                one-page evidence sheet (logs, before/after)
-assets/spp-tarkov-*.png            installer dialog and setup wizard (before/after)
+assets/spp-tarkov-*.png            installer dialog, launcher and character screen
 ```
 
 ---

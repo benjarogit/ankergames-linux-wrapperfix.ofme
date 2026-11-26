@@ -94,8 +94,9 @@ App-Host mit `Failed to create CoreCLR` abbricht.
 
 Das Standard-Installationsverzeichnis beibehalten — es ist der Spielordner, den
 der Launcher verwaltet. Der Assistent entpackt `Data.bin` (~64,7 GB) und legt
-`Launcher.exe` an, die der Launcher danach startet. `Launcher.exe` und der
-SPT-Server sind ebenfalls .NET-Apps und nutzen dieselbe Runtime.
+`Launcher.exe` neben das Spiel; der Launcher selbst zeigt weiter auf den
+Installer (siehe „Play öffnet immer wieder den Installer“). `Launcher.exe` und
+der SPT-Server sind ebenfalls .NET-Apps und nutzen dieselbe Runtime.
 
 ---
 
@@ -197,27 +198,6 @@ ln -s database/itemsToAdd.json 'database\itemsToAdd.json'
 
 Für jede Datei wiederholen, die der Mod so liest.
 
-### Launcher-Fenster: Cursor hängt, Flächen bleiben weiß
-
-Die Launcher-Oberfläche ist Photino/Blazor auf WebView2. Mit dem Standard-GPU-Pfad
-von WebView2 unter Wine zieht der Zeiger hinterher, behält die falsche Form und
-das Fenster bleibt zeitweise weiß. Im selben umu-Wrapper den Software-Compositor
-erzwingen:
-
-```sh
-case "$1" in
-  *Launcher.exe)
-    [ "${GAMEID:-}" = 3089 ] && export WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS=\
-"--disable-gpu --force-device-scale-factor=1 --disable-features=CalculateNativeWinOcclusion"
-    ;;
-esac
-```
-
-Mit den Flags zeichnet das Fenster ab der ersten Sekunde statt ~20 s weiß zu
-bleiben, Hover-Zustände folgen dem Zeiger, und Klicks landen dort, wo der Zeiger
-steht. Scrollen fühlt sich etwas weicher an — für einen Launcher in Ordnung. Mit
-`SPP_KEEP_WEBVIEW_GPU=1` lässt sich der Standardpfad zum Vergleich erzwingen.
-
 ### Play öffnet immer wieder den Installer
 
 „Play“ in AnkerGames startet `SPP_Tarkov_Installer.exe`, nicht das Spiel. Das ist
@@ -244,10 +224,62 @@ vorher schließen — es schreibt die Datei beim Start neu.
 
 Play läuft dann: Launcher → `Launcher.exe` → `SPT_Runtime\SPT.Launcher.exe` →
 Spiel. Der Stub braucht keine Argumente; er löst `SPT_Runtime` relativ zu sich
-selbst auf.
+selbst auf. Der nächste Abschnitt ersetzt diesen Windows-Launcher durch den
+nativen.
 
 Manuelle Alternative: AnkerGames → Spiel → Launch-Einstellungen → `Launcher.exe`
 wählen.
+
+### Launcher-Fenster: weiß, und der Cursor verschwindet
+
+Der Windows-Launcher ist Photino/Blazor auf WebView2. Unter Wine ist seine Seite
+eine D3D-Swapchain in einem Kindfenster, das `msedgewebview2.exe` gehört — diese
+Fläche wird hier nicht dargestellt, das Fenster bleibt weiß. WebView2 setzt
+außerdem den Cursor aus dem Browser-Prozess, und Wine kann dieses Handle nicht in
+einen X11-Cursor übersetzen
+([Wine-Bug 58922](https://bugs.winehq.org/show_bug.cgi?id=58922)) — der Zeiger
+ist über dem Fenster unsichtbar.
+
+`WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS=--disable-gpu` ist der übliche Rat, hilft
+hier aber nicht: Photino übergibt eigene `AdditionalBrowserArguments`, und
+WebView2 ignoriert dann sowohl die Umgebungsvariable als auch die Registry-Richtlinie.
+`PROTON_USE_WINED3D=1` lässt den Windows-Launcher zwar zeichnen, aber das Spiel
+erbt es und verliert DXVK.
+
+### Fix: den mitgelieferten Launcher nativ starten
+
+`SPT_Runtime/SPT.Launcher.Linux` ist derselbe Launcher, nativ für Linux gebaut.
+Er zeichnet mit GTK/WebKit — kein Wine, kein WebView2 — also kein weißes Fenster
+und ein normaler Desktop-Cursor. Das Spiel startet er selbst über umu/Proton.
+
+Seine Konfiguration auf die Linux-Pfade zeigen lassen und in den umu-Wrapper
+einhängen:
+
+```sh
+scripts/spp-tarkov-linux-launcher.sh "<prefix>"
+```
+
+Das Skript schreibt `SPT_Runtime/user/Launcher/LauncherSettings.json` (mit
+Backup):
+
+| Schlüssel | Wert |
+| --- | --- |
+| `GamePath` | `<prefix>/drive_c/Games/SPP-Tarkov` |
+| `LinuxSettings.PrefixPath` | `<prefix>` |
+| `LinuxSettings.UmuPath` | `/usr/bin/umu-run` — das Python-Skript, kein Shell-Wrapper |
+| `LinuxSettings.ProtonVersion` | der Proton-Ordner, z. B. `…/common/Proton - Experimental` |
+
+und setzt einen markierten Block in `~/.local/bin/umu-run`: bei `GAMEID=3089` und
+`Launcher.exe` startet er den nativen Launcher, und den nativen Server, falls er
+noch nicht läuft. `Play` läuft dann AnkerGames → `SPT.Launcher.Linux` →
+`EscapeFromTarkov.exe` unter Proton. Mit `SPP_WINE_LAUNCHER=1` fällt es auf den
+Windows-Launcher unter Wine zurück.
+
+![Nativer SPT-Launcher unter Linux](../../assets/spp-tarkov-launcher-linux.png)
+
+Der Launcher erreicht die Charaktererstellung, das Spiel läuft:
+
+![Escape from Tarkov Charaktererstellung](../../assets/spp-tarkov-character.png)
 
 ---
 

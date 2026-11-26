@@ -110,8 +110,8 @@ Vier Dokumente, auf Englisch und Deutsch. Sie bauen aufeinander auf:
 |---|---|---|---|
 | Ursachen | [root-cause.md](docs/en/root-cause.md) | [ursachen.md](docs/de/ursachen.md) | Funktionsweise, Defekt A und B, Referenzcode, Verifikation |
 | Spiele | [per-game.md](docs/en/per-game.md) | [spiele.md](docs/de/spiele.md) | Matrix der fünf Spiele, Marker-Layouts, nur scheinbar betroffene Titel |
-| Evidenz | [evidence.md](docs/en/evidence.md) | [evidenz.md](docs/de/evidenz.md) | kommentierte Log-Auszüge 01–08 und das Evidenzblatt |
-| Tarkov-Fix | [dotnet-installer.md](docs/en/dotnet-installer.md) | [dotnet-installer.md](docs/de/dotnet-installer.md) | .NET-Runtimes, nativer SPT-Server, WebView2-Flags, Play-Ziel |
+| Evidenz | [evidence.md](docs/en/evidence.md) | [evidenz.md](docs/de/evidenz.md) | kommentierte Log-Auszüge 01–09 und das Evidenzblatt |
+| Tarkov-Fix | [dotnet-installer.md](docs/en/dotnet-installer.md) | [dotnet-installer.md](docs/de/dotnet-installer.md) | .NET-Runtimes, nativer SPT-Server und -Launcher, Play-Ziel |
 
 Die ersten drei in dieser Reihenfolge lesen. Der Tarkov-Fix ist unabhängig von
 den Online-Fix-Defekten.
@@ -157,6 +157,14 @@ SPT-Launcher:
 scripts/spp-tarkov-play-target.sh "<Spielordner>" "<prefix>"
 ```
 
+Der Windows-Launcher unter Wine bleibt weiß und der Cursor verschwindet
+(WebView2 + D3D in einem Kindfenster, Wine-Bug 58922). Das Paket liefert
+`SPT.Launcher.Linux` mit; dieses Skript lässt Play den nativen starten:
+
+```sh
+scripts/spp-tarkov-linux-launcher.sh "<prefix>"
+```
+
 ---
 
 ## Aufbau des Repos
@@ -166,14 +174,15 @@ README.md                          diese Übersicht (Englisch, Standard)
 README.de.md                       dieselbe Übersicht auf Deutsch
 docs/en/                           root-cause, per-game, evidence, dotnet-installer
 docs/de/                           deutsche Fassung derselben vier Dokumente
-evidence/                          rohe Log-Auszüge 01–08, auf die die Docs verweisen
+evidence/                          rohe Log-Auszüge 01–09, auf die die Docs verweisen
 scripts/fix-reference.sh           Referenz-Implementierung beider Online-Fix-Fixes
 scripts/install-dotnet-runtime.sh  installiert .NET-Runtimes 10 in einen Prefix
 scripts/spp-tarkov-server.sh       startet den nativen SPT-Server (SPP Tarkov)
 scripts/spp-tarkov-play-target.sh  macht Play zum Spielstart statt zum Installer
+scripts/spp-tarkov-linux-launcher.sh  macht Play zum nativen SPT-Launcher
 assets/before-after.svg            das Diagramm oben
 assets/evidence.png                Evidenzblatt (Logs, vorher/nachher)
-assets/spp-tarkov-*.png            Installer-Dialog und Setup-Assistent (vorher/nachher)
+assets/spp-tarkov-*.png            Installer-Dialog, Launcher und Charaktererstellung
 ```
 
 ---
