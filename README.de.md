@@ -111,7 +111,7 @@ Vier Dokumente, auf Englisch und Deutsch. Sie bauen aufeinander auf:
 | Ursachen | [root-cause.md](docs/en/root-cause.md) | [ursachen.md](docs/de/ursachen.md) | Funktionsweise, Defekt A und B, Referenzcode, Verifikation |
 | Spiele | [per-game.md](docs/en/per-game.md) | [spiele.md](docs/de/spiele.md) | Matrix der fünf Spiele, Marker-Layouts, nur scheinbar betroffene Titel |
 | Evidenz | [evidence.md](docs/en/evidence.md) | [evidenz.md](docs/de/evidenz.md) | kommentierte Log-Auszüge 01–08 und das Evidenzblatt |
-| Tarkov-Fix | [dotnet-installer.md](docs/en/dotnet-installer.md) | [dotnet-installer.md](docs/de/dotnet-installer.md) | fehlende .NET-Runtimes im Prefix 3089 und der native SPT-Server |
+| Tarkov-Fix | [dotnet-installer.md](docs/en/dotnet-installer.md) | [dotnet-installer.md](docs/de/dotnet-installer.md) | .NET-Runtimes für Prefix 3089, der native SPT-Server, WebView2-Flags |
 
 Die ersten drei in dieser Reihenfolge lesen. Der Tarkov-Fix ist unabhängig von
 den Online-Fix-Defekten.

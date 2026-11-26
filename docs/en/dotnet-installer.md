@@ -194,6 +194,27 @@ ln -s database/itemsToAdd.json 'database\itemsToAdd.json'
 
 Repeat for every file the mod reads that way.
 
+### Launcher window: cursor lag and white areas
+
+The launcher UI is Photino/Blazor on WebView2. With WebView2's default GPU path
+under Wine the pointer trails behind the cursor, keeps the wrong shape and the
+window occasionally stays white. Force the software compositor in the same umu
+wrapper:
+
+```sh
+case "$1" in
+  *Launcher.exe)
+    [ "${GAMEID:-}" = 3089 ] && export WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS=\
+"--disable-gpu --force-device-scale-factor=1 --disable-features=CalculateNativeWinOcclusion"
+    ;;
+esac
+```
+
+With the flags the window paints from the first second instead of staying white
+for ~20 s, hover states follow the pointer, and clicks land where the pointer
+is. Scrolling feels slightly softer — acceptable for a launcher. Set
+`SPP_KEEP_WEBVIEW_GPU=1` to compare with the default path.
+
 ---
 
 ## Manual alternative

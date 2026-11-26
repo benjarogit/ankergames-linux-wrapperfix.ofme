@@ -197,6 +197,27 @@ ln -s database/itemsToAdd.json 'database\itemsToAdd.json'
 
 Für jede Datei wiederholen, die der Mod so liest.
 
+### Launcher-Fenster: Cursor hängt, Flächen bleiben weiß
+
+Die Launcher-Oberfläche ist Photino/Blazor auf WebView2. Mit dem Standard-GPU-Pfad
+von WebView2 unter Wine zieht der Zeiger hinterher, behält die falsche Form und
+das Fenster bleibt zeitweise weiß. Im selben umu-Wrapper den Software-Compositor
+erzwingen:
+
+```sh
+case "$1" in
+  *Launcher.exe)
+    [ "${GAMEID:-}" = 3089 ] && export WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS=\
+"--disable-gpu --force-device-scale-factor=1 --disable-features=CalculateNativeWinOcclusion"
+    ;;
+esac
+```
+
+Mit den Flags zeichnet das Fenster ab der ersten Sekunde statt ~20 s weiß zu
+bleiben, Hover-Zustände folgen dem Zeiger, und Klicks landen dort, wo der Zeiger
+steht. Scrollen fühlt sich etwas weicher an — für einen Launcher in Ordnung. Mit
+`SPP_KEEP_WEBVIEW_GPU=1` lässt sich der Standardpfad zum Vergleich erzwingen.
+
 ---
 
 ## Manuelle Alternative
