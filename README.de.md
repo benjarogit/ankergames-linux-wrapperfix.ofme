@@ -4,12 +4,14 @@
 
 ## Spiele
 
-- [SPP Tarkov (3089)](docs/de/games/tarkov.md) · Linux-Einrichtung, Spielstart und Fika-Co-op
-- [SCP 5K (2006)](docs/de/games/scp-5k.md) · Fix A
-- [HYPERCHARGE: Unboxed (3645)](docs/de/games/hypercharge.md) · Fix B
-- [Abyssus (2902)](docs/de/games/abyssus.md) · Fix B
-- [The Ascent (4013)](docs/de/games/the-ascent.md) · Fix A und B
-- [Species: Unknown (4035)](docs/de/games/species-unknown.md) · Fix B
+| Spiel | Anleitung |
+| --- | --- |
+| [SPP Tarkov (3089)](docs/de/games/tarkov.md) | Installation, Solo und Fika-Co-op |
+| [SCP 5K (2006)](docs/de/games/scp-5k.md) | Fehlende Steam-Dateien · Fix A |
+| [HYPERCHARGE: Unboxed (3645)](docs/de/games/hypercharge.md) | Steam-Initialisierung · Fix B |
+| [Abyssus (2902)](docs/de/games/abyssus.md) | Steam-Initialisierung · Fix B |
+| [The Ascent (4013)](docs/de/games/the-ascent.md) | Steam-Dateien und -Initialisierung · Fix A und B |
+| [Species: Unknown (4035)](docs/de/games/species-unknown.md) | Steam-Initialisierung · Fix B |
 
 ## Der gemeinsame Fix
 

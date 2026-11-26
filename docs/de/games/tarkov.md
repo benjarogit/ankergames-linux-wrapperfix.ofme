@@ -1,256 +1,197 @@
 # SPP Tarkov (3089)
 
-[← Spieleliste](../../../README.de.md) · [So funktioniert es](../wie-es-funktioniert.md) · **English:** [Tarkov](../../en/games/tarkov.md)
+[← Spieleliste](../../../README.de.md) · [English](../../en/games/tarkov.md) · [Technik](#6--warum)
 
-| | |
-|---|---|
-| Paket | SPP Tarkov — Singleplayer plus Fika-Co-op |
-| SPT / EFT | 4.1.2 / 0.16.9.40743 |
-| Co-op | enthalten: Fika-Server 2.4.0, Client 2.4.2 |
-| Status unter Linux | läuft: Play → SPT Launcher → Spiel |
-| Nötig | .NET 10 im Prefix, Play-Ziel, nativer Launcher |
+Wähle deinen Einstieg. Für Co-op braucht ihr beide **dasselbe SPP-Tarkov-Paket**.
+Fika ist darin enthalten.
 
-Inhalt: [1 Installation](#1--installation-linux) · [2 Start](#2--start) ·
-[3 Co-op](#3--co-op) · [4 Beenden](#4--beenden) · [5 Fehlersuche](#5--fehlersuche) ·
-[6 Warum](#6--warum)
+| Ich möchte … | Hier starten |
+| --- | --- |
+| **Für Freunde hosten** | [Ich hoste](#ich-hoste) |
+| **Bei einem Freund mitspielen** | [Ich trete bei](#ich-trete-bei) |
+| **Alleine spielen** | [Solo starten](#2--start) |
 
----
+[Windows-Installation](#installation-unter-windows) · [Linux-Installation](#1--installation-linux) · [Fehlersuche](#5--fehlersuche)
+
+## Installation unter Windows
+
+1. Installiere SPP Tarkov (3089) in AnkerGames und schließe den Assistenten ab.
+   Falls .NET fehlt, installiere [.NET Desktop Runtime 10 und ASP.NET Core
+   Runtime 10 für Windows x64](https://dotnet.microsoft.com/en-us/download/dotnet/10.0).
+2. Öffne den SPT-Launcher. Falls **Play** erneut den Assistenten öffnet, starte
+   `Launcher.exe` aus dem installierten Spielordner.
 
 ## 1 · Installation (Linux)
 
-Das Paket braucht .NET-Runtimes in seinem Wine-Prefix, Play muss das Spiel statt
-des Installers starten, und der Launcher muss der native sein. Vier Befehle, im
-Repo-Ordner ausgeführt. Die Pfade stehen in AnkerGames → Spiel →
-Launch-Einstellungen:
+Installiere SPP Tarkov (3089) in AnkerGames. Die Pfade findest du in den
+Launch-Einstellungen des Spiels. Führe die Befehle in einer lokalen Kopie
+dieses Repositories aus. Falls du es noch nicht hast, wähle auf GitHub
+**Code → Download ZIP**, entpacke das Archiv und öffne dort ein Terminal.
+Falls der Prefix noch fehlt, drücke einmal **Play**, damit AnkerGames ihn
+anlegt. Schließe anschließend den .NET-Hinweis.
 
-Installiere bei Bedarf den [gemeinsamen umu-Wrapper](../../../README.de.md#der-gemeinsame-fix).
-Der native Launcher und Server brauchen außerdem die .NET Runtime und die
-ASP.NET Core Runtime für Linux x64 aus dem .NET-10-Kanal. Lade Microsofts
-[dotnet-install-Skript](https://learn.microsoft.com/de-de/dotnet/core/tools/dotnet-install-script)
-herunter und führe vor Befehl 4 Folgendes aus:
+| Variable | Pfad, den du einträgst |
+| --- | --- |
+| `TARKOV_PREFIX` | Wine-Prefix für 3089, z. B. `/mnt/daten/Games/AnkerGames/Games/Prefixes/3089` |
+| `TARKOV_GAME_DIR` | Verwalteter Spielordner, z. B. `/mnt/daten/Games/AnkerGames/Games/Escape from Tarkov-3089` |
 
-```sh
-bash dotnet-install.sh --channel 10.0 --runtime dotnet --install-dir "$HOME/.local/share/spt-dotnet"
-bash dotnet-install.sh --channel 10.0 --runtime aspnetcore --install-dir "$HOME/.local/share/spt-dotnet"
-```
+1. Ersetze die beiden Beispielpfade durch deine eigenen und installiere die
+   Windows-.NET-Runtimes im Wine-Prefix.
 
-Sind die Linux-Runtimes woanders installiert, gib bei Befehl 4
-`--dotnet <Verzeichnis>` an. Der native Launcher braucht auch GTK und WebKitGTK.
+   ```sh
+   TARKOV_PREFIX="/mnt/daten/Games/AnkerGames/Games/Prefixes/3089"
+   TARKOV_GAME_DIR="/mnt/daten/Games/AnkerGames/Games/Escape from Tarkov-3089"
+   scripts/install-dotnet-runtime.sh "$TARKOV_PREFIX"
+   scripts/install-dotnet-runtime.sh "$TARKOV_PREFIX" --aspnet
+   ```
 
-| Platzhalter | Beispiel |
-|---|---|
-| `<prefix>` | `/mnt/daten/Games/AnkerGames/Games/Prefixes/3089` |
-| `<Spielordner>` | `/mnt/daten/Games/AnkerGames/Games/Escape from Tarkov-3089` |
+2. Wenn du das Paket gerade heruntergeladen hast, drücke **Play** und führe
+   den Assistenten einmal aus. Er entpackt rund 65 GB. Schließe danach
+   AnkerGames.
+3. Installiere den [umu-Wrapper](../../../README.de.md#der-gemeinsame-fix),
+   falls er fehlt. Der native Launcher braucht außerdem GTK und WebKitGTK.
+   Lade [Microsofts dotnet-install-Skript](https://learn.microsoft.com/de-de/dotnet/core/tools/dotnet-install-script)
+   herunter und verwende in den folgenden Befehlen den Pfad zur Skriptdatei:
 
-```sh
-scripts/install-dotnet-runtime.sh "<prefix>"
-scripts/install-dotnet-runtime.sh "<prefix>" --aspnet
-scripts/spp-tarkov-play-target.sh "<Spielordner>" "<prefix>"
-scripts/spp-tarkov-linux-launcher.sh "<prefix>"
-```
+   ```sh
+   bash dotnet-install.sh --channel 10.0 --runtime dotnet --install-dir "$HOME/.local/share/spt-dotnet"
+   bash dotnet-install.sh --channel 10.0 --runtime aspnetcore --install-dir "$HOME/.local/share/spt-dotnet"
+   ```
 
-Schließe AnkerGames vor Befehl 3. Das Skript legt den Launcher-Einstieg und
-einen Runtime-Link im verwalteten Spielordner an. Es sichert die Launcher-Library,
-bevor es das Play-Ziel umstellt. Befehl 4 speichert die Linux-Einstellungen und
-ergänzt den nativen Start im bestehenden Wrapper.
+4. Richte im selben Terminal wie in Schritt 1 das Play-Ziel und den nativen
+   Launcher ein. Falls deine Linux-Runtimes woanders liegen, ergänze beim
+   zweiten Befehl `--dotnet <Verzeichnis>`.
 
-> **Frische Installation?** Nach Befehl 1 einmal Play drücken und den Wizard
-> durchlaufen (er entpackt ~64,7 GB), dann mit Befehl 2 weitermachen.
+   ```sh
+   scripts/spp-tarkov-play-target.sh "$TARKOV_GAME_DIR" "$TARKOV_PREFIX"
+   scripts/spp-tarkov-linux-launcher.sh "$TARKOV_PREFIX"
+   ```
 
-Was die Befehle tun:
-
-| Befehl | Warum |
-|---|---|
-| 1 | der Installer ist eine .NET-10-WPF-App, Wine hat kein .NET → *„You must install .NET Desktop Runtime"* |
-| 2 | der SPT-Server braucht `Microsoft.AspNetCore.App` |
-| 3 | Play startet `SPP_Tarkov_Installer.exe`; das richtet es auf das Spiel |
-| 4 | der Windows-Launcher ist WebView2 unter Wine → weißes Fenster, kein Cursor |
-
----
+5. Öffne AnkerGames erneut. Unter Linux kann es rund 40 Sekunden dauern,
+   bis der native Launcher erscheint und der Server bereit ist.
 
 ## 2 · Start
 
-**Play** drücken:
+Drücke in AnkerGames **Play**. Wähle im SPT-Launcher **Local Server**, sobald dort **ONLINE** steht.
+Erstelle oder wähle dein eigenes Profil und drücke einmal **START GAME**.
 
-1. Der native Launcher öffnet als **SPT Launcher - Servers**. Der
-   Windows-Launcher heißt *SPP Tarkov - Servers*.
-2. Warten, bis **Local Server** auf **ONLINE** steht. Den Eintrag wählen und mit
-   dem eigenen Profil anmelden.
-3. **START GAME** startet `EscapeFromTarkov.exe` unter Proton.
+<details>
+<summary>So sieht der native Launcher unter Linux aus</summary>
 
-![Der native SPT-Launcher](../../../assets/spp-tarkov-launcher-linux.png)
+![Der native SPT-Launcher mit Local Server online](../../../assets/spp-tarkov-launcher-linux.png)
 
-Beim Kaltstart wartet der Wrapper auf die Antwort des Servers. Bis der
-Launcher erscheint, kann es rund 40 Sekunden dauern.
-
----
+</details>
 
 ## 3 · Co-op
 
-Fika ist in SPP Tarkov enthalten. Nutzt auf beiden PCs dasselbe Paket. Die
-Anleitung deckt das Hosten und Beitreten unter Windows und Linux ab.
-Spielt ihr im [selben Heimnetz](#im-selben-heimnetz) oder in
-[zwei Haushalten](#zwei-haushalte-mit-tailscale)?
+Am einfachsten laufen **SPT-Server und Raid auf demselben PC**. Der
+Mitspieler braucht die Adresse dieses PCs und ein eigenes SPT-Profil.
 
-**Teststand:** Der native SPT-Server hat Fika 2.4.0 geladen und eine
-Profilanmeldung über seine LAN-Adresse vom selben Linux-PC angenommen. Der
-Linux-Spielclient zeigte Fika 2.4.2 an. Verbindungen von einem zweiten PC,
-UDP-Spielverkehr und gemeinsame Raids zwischen Windows und Linux sind für
-dieses Paket noch ungetestet. [Co-op-Belege](../../../evidence/10-fika-coop.txt).
+### Ich hoste
 
-### Beide Seiten
+1. Schließe die [Windows-](#installation-unter-windows) oder
+   [Linux-Installation](#1--installation-linux) ab. Drücke **Play**, wähle **Local Server** bei **ONLINE** und melde dich mit deinem Profil an.
+2. Wähle, wie dein Mitspieler sich verbindet.
 
-Legt fest, wer den SPT-Server startet und den Raid hostet. Der Launcher
-verbindet sich über **6969/TCP** mit dem SPT-Server. Das Spiel verbindet sich
-über **25565/UDP** mit dem Spieler, der **Host Raid** anklickt. Am einfachsten
-übernimmt ein PC beide Aufgaben. Nutzt ein vertrauenswürdiges LAN oder
-gemeinsames privates VPN. Der getestete Launcher akzeptierte einen Profilnamen
-ohne Serverpasswort. Beschränkt daher den Zugriff auf den Server.
+   <a name="im-selben-heimnetz"></a>
 
-### Host — Windows
+   | Wo ihr seid | Was du tust | Was du weitergibst |
+   | --- | --- | --- |
+   | Im selben Heimnetz | Nutze deine LAN-IP. Ein VPN ist hier überflüssig. Unter Windows zeigt sie `ipconfig`, unter Linux `ip -4 addr`. | Deine LAN-IP mit `:6969` |
+   | In zwei Haushalten | [Richte Tailscale ein](#zwei-haushalte-mit-tailscale). | Deine Tailscale-IP mit `:6969` |
 
-1. SPP Tarkov starten und warten, bis der lokale Server online ist.
-2. In der Windows Defender Firewall eingehend TCP 6969 für den SPT-Server und
-   UDP 25565 für den Spielclient erlauben. Die Regeln auf die LAN- oder
-   VPN-Adressen der Mitspieler eingrenzen.
-3. Mit eigenem Profil anmelden. Beim Hosten über VPN bei Bedarf die gemeinsame
-   Serveradresse im Launcher wählen.
+3. Prüfe, ob dein Mitspieler die zwei Ports in der
+   [Host-Firewall](#host-firewall) erreichen darf. Drücke einmal **START GAME**.
+   Über Tailscale stellst du anschließend [die VPN-IP in Fika](#fika-über-tailscale) ein.
+4. Wähle im Spiel **Escape from Tarkov**, **PMC** oder **SCAV**, danach Karte
+   und Uhrzeit. Gehe durch Übungsmodus und Versicherung. Klicke
+   **Host Raid → Start**. Sobald dein Mitspieler geladen hat, klicke
+   **Start Raid**. [Raid-Ablauf bei Project Fika](https://wiki.project-fika.com/playing-fika/hosting-a-raid).
 
-### Host — Linux
+### Ich trete bei
 
-1. Der [Linux-Installation](#1--installation-linux) folgen, **Play** drücken
-   und warten, bis der Server online ist.
-2. TCP 6969 und UDP 25565 eingehend für die Mitspieler im LAN oder VPN
-   erlauben. Bei UFW `<Mitspieler-IP>` durch die LAN- oder VPN-IPv4-Adresse
-   des Mitspielers ersetzen:
-
-   ```sh
-   sudo ufw allow from <Mitspieler-IP> to any port 6969 proto tcp
-   sudo ufw allow from <Mitspieler-IP> to any port 25565 proto udp
-   sudo ufw status
-   ```
-
-3. Mit eigenem Profil anmelden. Beim Hosten über VPN bei Bedarf die gemeinsame
-   Serveradresse im Launcher wählen.
-
-### Im selben Heimnetz
-
-Ihr braucht kein VPN und kein zusätzliches Tool. Startet auf dem Host-PC den
-SPT-Server. Der Mitspieler trägt im SPT-Launcher die LAN-IPv4-Adresse des
-Hosts mit `:6969` ein, zum Beispiel `192.168.1.20:6969`. Die Adresse findest
-du auf dem Host unter Windows mit `ipconfig`, unter Linux mit `ip -4 addr`.
+1. Installiere dasselbe Paket unter [Windows](#installation-unter-windows)
+   oder [Linux](#1--installation-linux). Lass dir die Serveradresse geben.
+   Spielt ihr von verschiedenen Haushalten, nimm die
+   [Tailscale-Freigabe des Hosts](#zwei-haushalte-mit-tailscale) an.
+2. Drücke **Play** und öffne im SPT-Launcher **Servers → Add New Server**. Gib einen eigenen
+   Namen für den Eintrag ein und füge die Adresse des Hosts mit `:6969` ein,
+   zum Beispiel `192.168.1.20:6969`.
+3. Wähle den Server des Hosts. Erstelle bei Bedarf mit **Create New Profile**
+   dein eigenes Profil und melde dich damit an. Drücke einmal **START GAME**.
+   Im Spiel steht `FIKA 2.4.2 | SPT 4.1.2`.
+4. Wähle dieselbe Karte und Uhrzeit wie der Host. Gehe bis zur Lobby, suche
+   seinen Raid und klicke **Join**. Warte, bis der Host den Raid startet.
+   [Beitritt bei Project Fika](https://wiki.project-fika.com/playing-fika/joining-a-raid).
 
 ### Zwei Haushalte mit Tailscale
 
-Tailscale verbindet eure beiden PCs über ein privates virtuelles Netzwerk.
-Bei dieser Variante braucht ihr keine Portfreigaben am Router. Radmin VPN
-bietet einen Windows-Client und kommt für zwei Windows-PCs infrage. Für einen
-Linux-Host und einen Windows-Mitspieler verwendet diese Anleitung Tailscale.
-[Radmin-Systemanforderungen](https://www.radmin-vpn.com/help/).
-
-1. **Beide installieren Tailscale** und melden sich mit ihrem eigenen Konto an.
-   Unter Windows den [Tailscale-Installer](https://tailscale.com/docs/install/windows)
-   verwenden. Für [andere Linux-Distributionen](https://tailscale.com/docs/install/linux)
-   gelten die dortigen Installationsschritte. Unter CachyOS und Arch Linux:
-
-   ```sh
-   sudo pacman -S tailscale
-   sudo systemctl enable --now tailscaled
-   sudo tailscale up
-   ```
-
-   Den Link aus der Ausgabe im Browser öffnen und anmelden.
-2. **Der Host gibt seinen Spiel-PC frei.** In der
-   [Tailscale-Geräteliste](https://login.tailscale.com/admin/machines)
-   beim Spiel-PC **… → Share → Copy invite link** wählen. Den Link privat
-   an den Mitspieler geben. Der Mitspieler öffnet ihn und nimmt die Freigabe
-   mit seinem eigenen Konto an. Beide lassen Tailscale beim Spielen verbunden.
+1. Beide installieren Tailscale und melden sich mit eigenen Konten an.
+   Folgt der Anleitung für [Windows](https://tailscale.com/docs/install/windows)
+   oder [Linux](https://tailscale.com/docs/install/linux).
+2. Der Host öffnet die [Tailscale-Geräteliste](https://login.tailscale.com/admin/machines),
+   wählt beim Spiel-PC **… → Share → Copy invite link** und gibt den Link
+   privat weiter. Der Mitspieler öffnet ihn und nimmt die Freigabe an.
    [Tailscale-Gerätefreigabe](https://tailscale.com/docs/features/sharing).
-3. **Der Mitspieler verbindet sich in SPT.** Der Host startet SPP Tarkov und
-   wartet auf **ONLINE**. Der Mitspieler nimmt die Tailscale-IPv4 des
-   freigegebenen Hosts und ergänzt `:6969`. Die eigene Tailscale-IPv4 kann
-   der Host mit `tailscale ip -4` anzeigen. Der Mitspieler fügt die Adresse
-   unter **ADD NEW SERVER** hinzu und meldet sich mit einem eigenen Profil an.
-4. **Der Host richtet Fika ein.** Auf demselben PC wie der SPT-Server im
-   Spiel **F12 → Fika.Core → Network** öffnen. **Force IP** und
-   **Force Bind IP** auf die eigene Tailscale-IPv4 setzen. **UPnP** und
-   **NAT Punching** bleiben aus. Der Host klickt **Host Raid**, der
-   Mitspieler klickt **Join**. [Fika-Netzwerkeinstellungen](https://wiki.project-fika.com/faqandguides).
+3. Beide lassen Tailscale verbunden. Der Mitspieler verwendet die
+   Tailscale-IPv4 des freigegebenen Hosts mit `:6969`. Unter Linux zeigt
+   `tailscale ip -4` dem Host seine eigene Tailscale-IPv4.
 
-Fika dokumentiert für getrennte Netze auch Router-Portweiterleitung. Mit
-Tailscale bleibt der Server im privaten Netz erreichbar. Ein Test des Beitritts
-über Tailscale mit einem zweiten PC steht für dieses Paket noch aus.
-[Hosting-Varianten von Project Fika](https://wiki.project-fika.com/hosting-a-fika-server).
-
-### Verbindung prüfen
-
-Dem Mitspieler die Adresse, Port `6969` und die Paketversion geben. Auf dem
-Mitspieler-PC `https://<Adresse>:6969/launcher/v2/ping` öffnen oder den
-folgenden Befehl ausführen. In Windows PowerShell `curl.exe` verwenden und
-`/dev/null` durch `NUL` ersetzen.
+<details>
+<summary>Tailscale auf CachyOS oder Arch Linux installieren</summary>
 
 ```sh
-curl -k -o /dev/null -w '%{http_code}\n' https://<Adresse>:6969/launcher/v2/ping
+sudo pacman -S tailscale
+sudo systemctl enable --now tailscaled
+sudo tailscale up
 ```
 
-Vor dem Ausführen `<Adresse>` ersetzen. HTTP 200 bestätigt, dass das
-HTTPS-Backend erreichbar ist. Der gemeinsame Raid prüft die separate
-UDP-Verbindung.
+Öffne den Anmeldelink aus dem Terminal.
 
-### Mitspieler — Windows
+</details>
 
-1. Dasselbe SPP-Tarkov-Paket installieren und **Play** drücken. Falls .NET
-   fehlt, die Windows-x64-Desktop-Runtime 10 und ASP.NET Core Runtime 10 bei
-   [Microsoft herunterladen](https://dotnet.microsoft.com/en-us/download/dotnet/10.0).
-2. Im SPT-Launcher die Server-Liste öffnen (erstes Symbol in der Seitenleiste;
-   unter Windows auch *Settings → Add New Server*) → **ADD NEW SERVER**:
+#### Fika über Tailscale
 
-   | Feld | Wert |
-   |---|---|
-   | Name | beliebig, z. B. `Benny` |
-   | Adresse | `<Adresse>:6969` |
+Nach **START GAME** öffnet der **Raid-Host** im Spiel **F12 → Fika.Core →
+Network**. Setze **Force IP** und **Force Bind IP** auf deine eigene
+Tailscale-IPv4. UPnP und NAT Punching bleiben aus. Der Mitspieler verwendet
+die Standardeinstellungen. [VPN-Hinweise von Project Fika](https://wiki.project-fika.com/faqandguides).
 
-   Der Launcher ergänzt `https://` selbst; `:6969` bleibt dran, kein Schrägstrich
-   am Ende.
-3. **CREATE NEW PROFILE**, eigenen Namen wählen, mit diesem Namen anmelden. Nie
-   das Profil des Hosts nutzen — sonst teilt man sich den Charakter.
-4. **START GAME**. Unten links muss `FIKA 2.4.2 | SPT 4.1.2` stehen.
-5. Raid joinen (Ablauf unten).
+Tailscale stellt die private Verbindung ohne Portweiterleitung am Router her.
+Radmin VPN unterstützt Windows und kommt für zwei Windows-PCs infrage.
+[Radmin-Systemanforderungen](https://www.radmin-vpn.com/help/).
 
-### Mitspieler — Linux
+### Host-Firewall
 
-Wie Windows, zusätzlich der Fix aus diesem Repo, damit Play den nativen Launcher
-startet ([Schritte 1–4](#1--installation-linux)). Danach Server eintragen, Profil
-anlegen und joinen — genau wie oben.
+Erlaube eingehend **6969/TCP** für Launcher und Profile und **25565/UDP**
+für den Raid. Gib die Ports für die LAN- oder Tailscale-IP des Mitspielers frei.
+Das getestete Paket akzeptiert einen Profilnamen ohne Serverpasswort. Halte
+den Server daher im vertrauenswürdigen Heimnetz oder privaten VPN.
 
-### Ablauf im Raid
+<details>
+<summary>Firewall unter Windows oder Linux einstellen</summary>
 
-1. Host: Hauptmenü → **Escape from Tarkov** → PMC oder SCAV → Karte und Uhrzeit
-   → **Next** durch Practice-Einstellungen und Versicherung.
-2. Host: In der Lobby **Host Raid** wählen und mit **Start** laden.
-3. Mitspieler: gleicher Menüweg; der Raid des Hosts erscheint in der Lobby-Liste
-   → **Join**.
-4. Host: **Start Raid** drücken, sobald der Mitspieler fertig geladen hat.
-   [Raid hosten](https://wiki.project-fika.com/playing-fika/hosting-a-raid) ·
-   [Raid beitreten](https://wiki.project-fika.com/playing-fika/joining-a-raid).
+- **Windows:** Öffne **Windows Defender Firewall mit erweiterter Sicherheit →
+  Eingehende Regeln → Neue Regel → Benutzerdefiniert**. Lege je eine
+  Zulassungsregel für den lokalen Port TCP 6969 und UDP 25565 an. Trage
+  unter **Bereich** die Mitspieler-IP als Remote-IP-Adresse ein.
+  [Windows-Firewall-Anleitung](https://learn.microsoft.com/en-us/windows/security/operating-system-security/network-security/windows-firewall/configure#create-an-inbound-port-rule).
+- **Linux mit UFW:** Ersetze die Beispieladresse durch die LAN- oder
+  Tailscale-IPv4 des Mitspielers:
 
-### Co-op-Fehlersuche
+  ```sh
+  TARKOV_GUEST_IP="192.168.1.21"
+  sudo ufw allow from "$TARKOV_GUEST_IP" to any port 6969 proto tcp
+  sudo ufw allow from "$TARKOV_GUEST_IP" to any port 25565 proto udp
+  sudo ufw status
+  ```
 
-| Symptom | Ursache | Fix |
-|---|---|---|
-| Launcher meldet Server offline | 6969/TCP nicht erreichbar | Adresse, Firewall und VPN prüfen; `https://<Adresse>:6969/launcher/v2/ping` testen |
-| Login geht, aber keine Profile | falscher Server gewählt | den Eintrag des Hosts wählen, nicht `Local Server`; ist die Liste leer, ein Profil anlegen |
-| `FIKA …` fehlt im Menü | Client-Plugin nicht geladen | gleiches Paket/Version; `BepInEx/LogOutput.log` auf `Fika.Core` prüfen |
-| Fika-Versionsfehler | Client und Server passen nicht | gleiches Paket, oder Fika-Versionen angleichen |
-| Raid-Liste leer, obwohl der Host gestartet hat | anderer Server oder abweichende Raid-Einstellungen | denselben Server, dieselbe Karte und Uhrzeit wählen |
-| „Error opening ports" beim Joinen | 25565/UDP des Raid-Hosts nicht erreichbar | Firewall und VPN-IP des Raid-Hosts prüfen |
-| Disconnects, Rubber-Banding | WLAN, VPN-Relay, schwacher Upload | Kabel; anderen VPN-Ausgang testen |
-| Abstürze oder Desync mit Mods | inkompatible SPT-Mods | Mods auf beiden Seiten entfernen, dann paarweise zurück |
+</details>
 
-Mehr: [Fika-FAQ](https://wiki.project-fika.com/faqandguides) und der
-[Fika-Discord](https://discord.gg/project-fika).
-
----
+> [!NOTE]
+> Der Linux-Client ist gestartet und Fikas Versionsprüfung war erfolgreich.
+> Der Beitritt von einem zweiten PC und ein gemeinsamer Raid sind für
+> dieses Paket noch ungetestet. [Testbelege](../../../evidence/10-fika-coop.txt).
 
 ## 4 · Beenden
 
@@ -270,23 +211,44 @@ AnkerGames neu starten — das Badge ist veraltet.
 
 ## 5 · Fehlersuche
 
+| Was du siehst | Was du tun kannst |
+| --- | --- |
+| Der Installer öffnet erneut oder der Windows-Launcher bleibt unter Wine weiß | Play-Ziel und nativen Launcher in der [Linux-Installation](#1--installation-linux) prüfen. Für den nativen Start bleibt `SPP_WINE_LAUNCHER` ungesetzt. |
+| Der native Launcher bleibt unter Wayland weiß | Launcher schließen und AnkerGames ohne erzwungenes `GDK_BACKEND=x11` starten. |
+| **Game has closed** erscheint beim Laden | Warte auf das Spielfenster, bevor du erneut klickst. Die Prozessprüfung des Launchers kann unter Linux zu früh melden. [SPT-Launcher-Quellcode](https://github.com/sp-tarkov/launcher/blob/master/project/SPTarkov.Core/Helpers/GameHelper.cs#L305-L321). |
+| Der Launcher öffnet sich nicht oder **START GAME** tut nichts | `~/.local/share/spt-server.log` auf einen Start-Timeout prüfen. [Linux-Pfade](#1--installation-linux) und `GamePath` in `LauncherSettings.json` kontrollieren. |
+| Der Mitspieler kann sich nicht anmelden | Adresse, Port `:6969` und TCP-Verbindung mit dem Test unten prüfen. |
+| Die Anmeldung klappt, der Raid-Beitritt scheitert | Denselben Server, dieselbe Karte und Uhrzeit wählen. UDP-Regel und VPN-IP am Raid-Host prüfen. |
+| **FIKA** fehlt oder die Versionen passen nicht | Paket und Mods auf beiden PCs abgleichen. In `BepInEx/LogOutput.log` nach `Fika.Core` suchen. |
+| AnkerGames meldet `game_stop_not_found` | Folge den [Schritten zum Beenden](#4--beenden). |
+
+<details>
+<summary>Verbindung vom Mitspieler-PC prüfen</summary>
+
+Öffne `https://<Host-IP>:6969/launcher/v2/ping` mit der LAN- oder
+Tailscale-IP des Hosts. Der Testserver verwendet ein selbstsigniertes
+Zertifikat. Du kannst den Statuscode auch im Terminal prüfen:
+
+```sh
+curl -k -o /dev/null -w '%{http_code}\n' "https://<Host-IP>:6969/launcher/v2/ping"
+```
+
+Unter Windows `curl.exe` verwenden und `/dev/null` durch `NUL` ersetzen.
+HTTP 200 bestätigt, dass der SPT-Server erreichbar ist. Der Beitritt zum Raid
+prüft den separaten UDP-Weg. [FAQ von Project Fika](https://wiki.project-fika.com/faqandguides).
+
+</details>
+
+<details>
+<summary>Linux-Runtimefehler und Logdateien</summary>
+
 | Symptom | Ursache | Fix |
 |---|---|---|
-| Fenster bleibt weiß, Titel *SPP Tarkov - Servers* | der Windows-Launcher läuft | Schritt 4 erneut; `SPP_WINE_LAUNCHER` darf nicht gesetzt sein |
-| Natives Fenster **SPT Launcher - Servers** bleibt weiß | Das trat in der Wayland-Testsitzung bei erzwungenem `GDK_BACKEND=x11` auf | Launcher schließen und AnkerGames ohne erzwungenes GTK-Backend starten |
-| Fenster weiß **und** kein Cursor | Windows-Launcher + [Wine-Bug 58922](https://bugs.winehq.org/show_bug.cgi?id=58922) | den nativen Launcher nutzen |
-| Weiterhin *„You must install .NET Desktop Runtime"* | Runtime im falschen Prefix, oder Version < 10.0 | `<prefix>/drive_c/Program Files/dotnet/shared/Microsoft.WindowsDesktop.App` prüfen |
-| `Framework: 'Microsoft.AspNetCore.App', version '10.0.0'` | ASP.NET Core fehlt | `scripts/install-dotnet-runtime.sh "<prefix>" --aspnet` |
 | `CryptographicException: Erfolg.` bei `CopyWithPrivateKey` | CNG ist in Protons Wine nicht implementiert | nativen Server nutzen |
 | `System.ConsolePal.set_Title` / „Ungültiger Zugriff" | `SPT.Server.exe` aus einem Unix-Terminal gestartet | mit `wine start` starten, oder den nativen Server nutzen |
-| Launcher öffnet sich nicht und das Log meldet einen Server-Timeout | Der lokale Server hat innerhalb von zwei Minuten nicht geantwortet | `~/.local/share/spt-server.log` ansehen und `scripts/spp-tarkov-server.sh "<Spielordner>" --status` ausführen |
 | `Could not find file '...database\itemsToAdd.json'` | ein Mod baut einen Pfad mit Backslash | `ln -s database/itemsToAdd.json 'database\itemsToAdd.json'` |
 | `Nicht behebbarer Systemfehler` / `MS.Internal.Invariant.FailFast` | keine nutzbare Schriftfamilie im Prefix | `WINEPREFIX="<prefix>" winetricks -q corefonts` |
 | `Failed to create CoreCLR` | W^X unter Wine | mit `DOTNET_EnableWriteXorExecute=0` starten |
-| Installer startet, aber Play bietet ihn weiter an | Schritt 3 nicht angewandt, oder Spiel außerhalb des verwalteten Ordners | Schritt 3 erneut ausführen |
-| Launcher öffnet, **START GAME** tut nichts | Server offline oder `GamePath` falsch | Serverstatus und `LauncherSettings.json` prüfen |
-| AnkerGames: `game_stop_not_found` | Spiel vom SPT-Launcher gestartet | [selbst beenden](#4--beenden) |
-| Zweites **START GAME** hängt, kein Spielfenster | zwei Starts gleichzeitig, oder ein zweiter Launcher hält den Prefix | alle Launcher und Spielfenster schließen, einmal starten |
 
 Logs:
 
@@ -296,7 +258,7 @@ Logs:
 <Spielordner>/Logs/                                                Spiel-Client
 ```
 
----
+</details>
 
 ## 6 · Warum
 
