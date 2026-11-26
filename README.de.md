@@ -4,11 +4,11 @@
 
 **Online-Fix-Builds erreichen Steam nicht. Zwei Fixes im Launcher lösen das.**
 
-[English](README.md) · [Ursachen](docs/de/ursachen.md) · [Spiele](docs/de/spiele.md) · [Evidenz](docs/de/evidenz.md)
+[English](README.md) · [Ursachen](docs/de/ursachen.md) · [Spiele](docs/de/spiele.md) · [Evidenz](docs/de/evidenz.md) · [Tarkov-Fix](docs/de/dotnet-installer.md)
 
 ![Plattform](https://img.shields.io/badge/plattform-Linux-0f172a?style=flat-square)
 ![Laufzeit](https://img.shields.io/badge/laufzeit-umu%20%2B%20Proton-0f172a?style=flat-square)
-![Spiele geprüft](https://img.shields.io/badge/spiele%20gepr%C3%BCft-5-067647?style=flat-square)
+![Online-Fix geprüft](https://img.shields.io/badge/online--fix%20gepr%C3%BCft-5-067647?style=flat-square)
 ![Spieldateien verändert](https://img.shields.io/badge/spieldateien%20ver%C3%A4ndert-keine-b42318?style=flat-square)
 
 </div>
@@ -102,10 +102,24 @@ Der genaue Code steht in [`scripts/fix-reference.sh`](scripts/fix-reference.sh)
 
 ---
 
-## Verwandt: SPP Tarkov braucht die .NET Desktop Runtime
+## Dokumentation
+
+Vier Dokumente, auf Englisch und Deutsch. Sie bauen aufeinander auf:
+
+| Dokument | English | Deutsch | Inhalt |
+|---|---|---|---|
+| Ursachen | [root-cause.md](docs/en/root-cause.md) | [ursachen.md](docs/de/ursachen.md) | Funktionsweise, Defekt A und B, Referenzcode, Verifikation |
+| Spiele | [per-game.md](docs/en/per-game.md) | [spiele.md](docs/de/spiele.md) | Matrix der fünf Spiele, Marker-Layouts, nur scheinbar betroffene Titel |
+| Evidenz | [evidence.md](docs/en/evidence.md) | [evidenz.md](docs/de/evidenz.md) | kommentierte Log-Auszüge 01–07 und das Evidenzblatt |
+| Tarkov-Fix | [dotnet-installer.md](docs/en/dotnet-installer.md) | [dotnet-installer.md](docs/de/dotnet-installer.md) | fehlende .NET Desktop Runtime im Prefix 3089 |
+
+Die ersten drei in dieser Reihenfolge lesen. Der Tarkov-Fix ist unabhängig von
+den Online-Fix-Defekten.
+
+### SPP Tarkov (3089): .NET Desktop Runtime
 
 Ein anderes Problem mit demselben Muster — eine fehlende Voraussetzung im
-Prefix, kein Steam-Fehler. `SPP_Tarkov_Installer.exe` (Spiel 3089) ist eine
+Prefix, kein Steam-Fehler. `SPP_Tarkov_Installer.exe` ist eine
 framework-abhängige WPF-App für .NET 10, und im Prefix fehlt
 `Microsoft.WindowsDesktop.App`. Der App-Host bricht ab mit *„You must install
 .NET Desktop Runtime to run this application“*.
@@ -118,7 +132,8 @@ scripts/install-dotnet-runtime.sh "<prefix>"
 
 Das Skript entpackt die offiziellen win-x64-Runtime-Zips nach
 `<prefix>/drive_c/Program Files/dotnet` — den Standardpfad, den der .NET-App-Host
-durchsucht. Details, Screenshots und Fehlersuche:
+durchsucht. Verifiziert mit Proton Experimental: Der Setup-Assistent startet
+und läuft ohne Umgebungsvariable. Details, Screenshots und Fehlersuche:
 [docs/de/dotnet-installer.md](docs/de/dotnet-installer.md).
 
 ---
@@ -126,19 +141,16 @@ durchsucht. Details, Screenshots und Fehlersuche:
 ## Aufbau des Repos
 
 ```
-README.md                  diese Übersicht auf Englisch (Standard)
-README.de.md               dieselbe Übersicht auf Deutsch
-docs/en/root-cause.md      technische Analyse: Hintergrund, beide Defekte, Evidenz
-docs/en/per-game.md        Spiel-Matrix, Marker-Tiefen, nicht betroffene Titel
-docs/en/evidence.md        kommentierte Log-Auszüge und der Evidenz-Screenshot
-docs/en/dotnet-installer.md  SPP Tarkov: fehlende .NET Desktop Runtime im Prefix
-docs/de/…                  deutsche Fassung der vier Dokumente
-evidence/                  rohe Log-Auszüge (01–07), auf die die Docs verweisen
-scripts/fix-reference.sh   Referenz-Implementierung beider Fixes
+README.md                          diese Übersicht (Englisch, Standard)
+README.de.md                       dieselbe Übersicht auf Deutsch
+docs/en/                           root-cause, per-game, evidence, dotnet-installer
+docs/de/                           deutsche Fassung derselben vier Dokumente
+evidence/                          rohe Log-Auszüge 01–07, auf die die Docs verweisen
+scripts/fix-reference.sh           Referenz-Implementierung beider Online-Fix-Fixes
 scripts/install-dotnet-runtime.sh  installiert .NET Desktop Runtime 10 in einen Prefix
-assets/before-after.svg    das Diagramm oben
-assets/evidence.png        Evidenzblatt (Logs, vorher/nachher)
-assets/spp-tarkov-*.png    Installer-Dialog und Setup-Assistent (vorher/nachher)
+assets/before-after.svg            das Diagramm oben
+assets/evidence.png                Evidenzblatt (Logs, vorher/nachher)
+assets/spp-tarkov-*.png            Installer-Dialog und Setup-Assistent (vorher/nachher)
 ```
 
 ---
@@ -166,7 +178,7 @@ compatdata-Prefix von Steam.
   Steam, CachyOS / KDE Wayland / NVIDIA.
 * Es werden keine Spieldateien verändert und kein DRM umgangen. Die Fixes
   bereiten nur den Wine-Prefix vor und setzen einen Wine-DLL-Override — genau
-  das, was Progons eigenes `proton`-Skript beim Anlegen eines Prefixes tut.
+  das, was Protons eigenes `proton`-Skript beim Anlegen eines Prefixes tut.
 * Der Bericht beschreibt beobachtetes Verhalten und einen reproduzierbaren
   Fix. Er ist keine offizielle Aussage von AnkerGames.
 

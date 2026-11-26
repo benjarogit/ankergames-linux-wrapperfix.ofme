@@ -4,11 +4,11 @@
 
 **Online-fix builds never reach Steam. Two launcher-side fixes make them work.**
 
-[Deutsch](README.de.md) · [Root cause](docs/en/root-cause.md) · [Per game](docs/en/per-game.md) · [Evidence](docs/en/evidence.md)
+[Deutsch](README.de.md) · [Root cause](docs/en/root-cause.md) · [Per game](docs/en/per-game.md) · [Evidence](docs/en/evidence.md) · [Tarkov fix](docs/en/dotnet-installer.md)
 
 ![platform](https://img.shields.io/badge/platform-Linux-0f172a?style=flat-square)
 ![runtime](https://img.shields.io/badge/runtime-umu%20%2B%20Proton-0f172a?style=flat-square)
-![games verified](https://img.shields.io/badge/games%20verified-5-067647?style=flat-square)
+![online-fix verified](https://img.shields.io/badge/online--fix%20verified-5-067647?style=flat-square)
 ![game files touched](https://img.shields.io/badge/game%20files%20touched-none-b42318?style=flat-square)
 
 </div>
@@ -101,13 +101,27 @@ The exact code is in [`scripts/fix-reference.sh`](scripts/fix-reference.sh)
 
 ---
 
-## Related: SPP Tarkov needs the .NET Desktop Runtime
+## Documentation
+
+Four documents, English and German. They build on each other:
+
+| Document | English | Deutsch | Covers |
+|---|---|---|---|
+| Root cause | [root-cause.md](docs/en/root-cause.md) | [ursachen.md](docs/de/ursachen.md) | how the builds work, defect A and B, reference code, verification |
+| Per game | [per-game.md](docs/en/per-game.md) | [spiele.md](docs/de/spiele.md) | the five-game matrix, marker layouts, titles that only look affected |
+| Evidence | [evidence.md](docs/en/evidence.md) | [evidenz.md](docs/de/evidenz.md) | annotated log excerpts 01–07 and the evidence sheet |
+| Tarkov fix | [dotnet-installer.md](docs/en/dotnet-installer.md) | [dotnet-installer.md](docs/de/dotnet-installer.md) | the missing .NET Desktop Runtime in prefix 3089 |
+
+Read the first three in order. The Tarkov fix is independent of the online-fix
+defects.
+
+### SPP Tarkov (3089): .NET Desktop Runtime
 
 A different failure with the same flavour — a missing prerequisite in the
-prefix, not a Steam bug. `SPP_Tarkov_Installer.exe` (game 3089) is a
-framework-dependent WPF app for .NET 10, and the prefix has no
-`Microsoft.WindowsDesktop.App`, so the app host stops with *"You must install
-.NET Desktop Runtime to run this application"*.
+prefix, not a Steam bug. `SPP_Tarkov_Installer.exe` is a framework-dependent
+WPF app for .NET 10, and the prefix has no `Microsoft.WindowsDesktop.App`, so
+the app host stops with *"You must install .NET Desktop Runtime to run this
+application"*.
 
 One command fixes it, without running any Windows installer:
 
@@ -117,7 +131,8 @@ scripts/install-dotnet-runtime.sh "<prefix>"
 
 It extracts the official win-x64 runtime zips into
 `<prefix>/drive_c/Program Files/dotnet`, the default probe path of the .NET app
-host. Details, screenshots and troubleshooting:
+host. Verified with Proton Experimental: the setup wizard starts and runs
+without any environment variable. Details, screenshots and troubleshooting:
 [docs/en/dotnet-installer.md](docs/en/dotnet-installer.md).
 
 ---
@@ -125,19 +140,16 @@ host. Details, screenshots and troubleshooting:
 ## Repository layout
 
 ```
-README.md                  this page (English, default)
-README.de.md               same overview in German
-docs/en/root-cause.md      full technical write-up: background, both defects, evidence
-docs/en/per-game.md        per-game matrix, marker depths, out-of-scope titles
-docs/en/evidence.md        annotated log excerpts and the evidence screenshot
-docs/en/dotnet-installer.md  SPP Tarkov: missing .NET Desktop Runtime in the prefix
-docs/de/…                  German versions of the four documents
-evidence/                  raw log excerpts (01–07) referenced by the docs
-scripts/fix-reference.sh   reference implementation of both fixes
+README.md                          this page (English, default)
+README.de.md                       the same overview in German
+docs/en/                           root-cause, per-game, evidence, dotnet-installer
+docs/de/                           German versions of the same four documents
+evidence/                          raw log excerpts 01–07, referenced by the docs
+scripts/fix-reference.sh           reference implementation of both online-fix fixes
 scripts/install-dotnet-runtime.sh  provisions .NET Desktop Runtime 10 into a prefix
-assets/before-after.svg    the pipeline diagram above
-assets/evidence.png        one-page evidence sheet (logs, before/after)
-assets/spp-tarkov-*.png    installer dialog and setup wizard (before/after)
+assets/before-after.svg            the pipeline diagram above
+assets/evidence.png                one-page evidence sheet (logs, before/after)
+assets/spp-tarkov-*.png            installer dialog and setup wizard (before/after)
 ```
 
 ---

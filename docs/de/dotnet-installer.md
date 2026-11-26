@@ -1,6 +1,6 @@
 # SPP Tarkov: Der Installer braucht die .NET Desktop Runtime
 
-[← Übersicht](../../README.de.md) · [Spiele](spiele.md) · [Ursachen](ursachen.md) · **English:** [.NET installer](../en/dotnet-installer.md)
+[← Übersicht](../../README.de.md) · [Ursachen](ursachen.md) · [Spiele](spiele.md) · [Evidenz](evidenz.md) · [Tarkov-Fix](dotnet-installer.md) · **English:** [.NET installer](../en/dotnet-installer.md)
 
 **Spiel:** Escape from Tarkov (3089) — SPP Tarkov, das Singleplayer-Projekt
 **Launcher:** Anker Launcher 0.1.33, umu-launcher 1.4.3, Proton Experimental

@@ -1,6 +1,6 @@
 # Per-game matrix
 
-[← Overview](../../README.md) · [Root cause](root-cause.md) · [Evidence](evidence.md) · **Deutsch:** [Spiele](../de/spiele.md)
+[← Overview](../../README.md) · [Root cause](root-cause.md) · [Per game](per-game.md) · [Evidence](evidence.md) · [Tarkov fix](dotnet-installer.md) · **Deutsch:** [Spiele](../de/spiele.md)
 
 All five games below were tested with the same launcher build (0.1.33), the same
 runtime (umu 1.4.3 + Proton Experimental `11.0-100`) and their existing prefixes.
@@ -85,7 +85,8 @@ Catalog metadata (`multiplayer: false`, `online_fix: false`) already reflects
 this.
 
 It does have its own Linux blocker: the installer is a framework-dependent
-.NET 10 WPF app and the prefix has no `Microsoft.WindowsDesktop.App`. See
+.NET 10 WPF app and the prefix has no `Microsoft.WindowsDesktop.App`. That is
+fixed by provisioning the official runtime zips into the prefix — see
 [dotnet-installer.md](dotnet-installer.md).
 
 ### Call of Duty: Modern Warfare II (2522)

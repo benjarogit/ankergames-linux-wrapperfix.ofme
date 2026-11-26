@@ -1,6 +1,6 @@
 # Evidence
 
-[← Overview](../../README.md) · [Root cause](root-cause.md) · [Per game](per-game.md) · **Deutsch:** [Evidenz](../de/evidenz.md)
+[← Overview](../../README.md) · [Root cause](root-cause.md) · [Per game](per-game.md) · [Evidence](evidence.md) · [Tarkov fix](dotnet-installer.md) · **Deutsch:** [Evidenz](../de/evidenz.md)
 
 Everything here was captured on 2026-11-25 with Anker Launcher 0.1.33,
 umu-launcher 1.4.3 and Proton Experimental (`11.0-100`). Paths are the real

@@ -1,6 +1,6 @@
 # Spiel-Matrix
 
-[← Übersicht](../../README.de.md) · [Ursachen](ursachen.md) · [Evidenz](evidenz.md) · **English:** [Per game](../en/per-game.md)
+[← Übersicht](../../README.de.md) · [Ursachen](ursachen.md) · [Spiele](spiele.md) · [Evidenz](evidenz.md) · [Tarkov-Fix](dotnet-installer.md) · **English:** [Per game](../en/per-game.md)
 
 Alle fünf Spiele wurden mit demselben Launcher-Build (0.1.33), derselben
 Laufzeit (umu 1.4.3 + Proton Experimental `11.0-100`) und ihren vorhandenen
@@ -88,7 +88,8 @@ einen gehosteten Server. Die Katalog-Metadaten (`multiplayer: false`,
 
 Es hat aber einen eigenen Linux-Blocker: Der Installer ist eine
 framework-abhängige .NET-10-WPF-App, und im Prefix fehlt
-`Microsoft.WindowsDesktop.App`. Siehe [dotnet-installer.md](dotnet-installer.md).
+`Microsoft.WindowsDesktop.App`. Das behebt das Provisioning der offiziellen
+Runtime-Zips in den Prefix — siehe [dotnet-installer.md](dotnet-installer.md).
 
 ### Call of Duty: Modern Warfare II (2522)
 
