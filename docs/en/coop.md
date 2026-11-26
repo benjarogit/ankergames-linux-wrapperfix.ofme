@@ -38,6 +38,10 @@ A standard SPT install also works, but it needs the matching Fika client and
 the same SPT version. Mixing 4.0 and 4.1 mods, or different Fika versions, is
 the most common reason a connection fails.
 
+On Linux the guest needs the same launcher fix as the host (this repo: native
+`SPT.Launcher.Linux` through the wrapper). On Windows the stock SPT launcher is
+enough.
+
 > The launcher logs in with the **profile name** in SPT 4.1; no server password
 > is checked. Anyone who can reach the server can create a profile and log in as
 > an existing one. Share the address only with friends and never expose the

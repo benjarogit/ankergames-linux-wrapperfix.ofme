@@ -39,6 +39,10 @@ Fika-Client und dieselbe SPT-Version. Gemischte 4.0-/4.1-Mods oder
 unterschiedliche Fika-Versionen sind die häufigste Ursache, wenn keine
 Verbindung zustande kommt.
 
+Unter Linux braucht der Mitspieler denselben Launcher-Fix wie der Host (dieses
+Repo: nativer `SPT.Launcher.Linux` über den Wrapper). Unter Windows reicht der
+normale SPT-Launcher.
+
 > Der Launcher meldet sich in SPT 4.1 mit dem **Profilnamen** an; ein
 > Server-Passwort wird nicht geprüft. Wer den Server erreicht, kann ein Profil
 > anlegen und sich als vorhandenes Profil anmelden. Die Adresse nur an Freunde
