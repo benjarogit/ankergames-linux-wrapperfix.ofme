@@ -1,12 +1,12 @@
-# Hintergrund: wie Online-Fix-Builds funktionieren und warum sie scheitern
+# So funktionieren die AnkerGames-Fixes
 
-[← Übersicht](../../README.de.md) · [Tarkov-Anleitung](tarkov.md) · [Co-op](coop.md) · **English:** [Background](../en/background.md)
+[← Spieleliste](../../README.de.md) · [Tarkov-Anleitung](games/tarkov.md) · **English:** [How it works](../en/how-it-works.md)
 
 **Gemeldet gegen:** Anker Launcher 0.1.30/0.1.33, umu-launcher 1.4.3, Proton
 Experimental (`11.0-100`), nativer Steam, CachyOS / KDE Wayland / NVIDIA.
 
 Diese Seite erklärt das *Warum*. Die Fixes stehen im
-[README](../../README.de.md#online-fix-builds).
+[README](../../README.de.md#der-gemeinsame-fix).
 
 ---
 
@@ -319,4 +319,4 @@ Escape from Tarkov (3089) ist **kein** Steam-Titel. Das Paket ist SPP Tarkov,
 ein Singleplayer-Projekt mit eigenem lokalen Server; keine Steam-Client-API
 beteiligt, also greift keiner der Fixes. Seine Blocker sind .NET-Runtimes, das
 Play-Ziel und der WebView2-Launcher — siehe
-[Tarkov-Anleitung](tarkov.md). Co-op ist als Fika enthalten: [coop.md](coop.md).
+[Tarkov-Anleitung](games/tarkov.md). Co-op ist als Fika enthalten: [Tarkov-Co-op](games/tarkov.md#3--co-op).

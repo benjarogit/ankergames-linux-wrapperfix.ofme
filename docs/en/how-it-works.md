@@ -1,11 +1,11 @@
-# Background: how online-fix builds work and why they fail
+# How the AnkerGames fixes work
 
-[← Overview](../../README.md) · [Tarkov guide](tarkov.md) · [Co-op](coop.md) · **Deutsch:** [Hintergrund](../de/hintergrund.md)
+[← Games](../../README.md) · [Tarkov guide](games/tarkov.md) · **Deutsch:** [So funktioniert es](../de/wie-es-funktioniert.md)
 
 **Reported against:** Anker Launcher 0.1.30/0.1.33, umu-launcher 1.4.3, Proton
 Experimental (`11.0-100`), native Steam, CachyOS / KDE Wayland / NVIDIA.
 
-This page is the *why*. The fixes are in the [README](../../README.md#online-fix-builds).
+This page is the *why*. The fixes are in the [README](../../README.md#the-common-fix).
 
 ---
 
@@ -307,5 +307,5 @@ Suggestion: gate the badge on `online_fix` / `multiplayer`, or add an explicit
 Escape from Tarkov (3089) is **not** a Steam title. The package is SPP Tarkov, a
 single-player project with its own local server; no Steam client API is involved,
 so neither fix applies. Its blockers are .NET runtimes, the Play target and the
-WebView2 launcher — see the [Tarkov guide](tarkov.md). Co-op is included as Fika:
-[coop.md](coop.md).
+WebView2 launcher — see the [Tarkov guide](games/tarkov.md). Co-op is included as Fika:
+[Tarkov co-op](games/tarkov.md#3--co-op).

@@ -4,7 +4,7 @@ Same prefix, native SPT server on `0.0.0.0:6969`, Proton Experimental
 (wine-11.0). SPT 4.1.2.
 
 SPP Tarkov already contains both halves of Fika. Only the network path between
-the two players is missing; `docs/en/coop.md` covers that.
+the two players is missing; `docs/en/games/tarkov.md#3--co-op` covers that.
 
 ## 1 · Server mod loaded
 
@@ -92,4 +92,4 @@ $ sudo ufw status
 ```
 
 Fika needs `6969/TCP` (backend) and `25565/UDP` (in-raid networking). The
-router/port-forwarding or VPN part is described in `docs/en/coop.md`.
+LAN or VPN setup is described in `docs/en/games/tarkov.md#3--co-op`.

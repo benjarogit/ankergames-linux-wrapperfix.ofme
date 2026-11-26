@@ -12,8 +12,9 @@ native Linux build; that one renders with GTK/WebKit.
 
 ## 1 · Play starts the native launcher
 
-`Play` in AnkerGames calls `umu-run Launcher.exe` with `GAMEID=3089`. The wrapper
-starts the native server (if needed) and then the native launcher:
+`Play` calls `umu-run Launcher.exe`. The corrected wrapper checks for the
+native launcher next to that executable. It starts the server if needed
+and then launches the native client (see sections 6 and 7):
 
 ```
 SPP Tarkov: starting the native SPT launcher
@@ -48,7 +49,7 @@ GAME** fails silently and the launcher shows `Game Failed to start:`.
 
 ```
 /usr/bin/python3 /usr/bin/umu-run EscapeFromTarkov.exe -force-gfx-jobs native \
-  -token=6b080c6cfab4064643d4a994 \
+  -token=[redacted] \
   -config={'BackendUrl':'https://127.0.0.1:6969','Version':'live','MatchingVersion':'live'}
 ```
 
@@ -120,3 +121,34 @@ Photino.NET: "SPT Launcher".SetIconFile(/tmp/SPT.Launcher/spt-logo.ico)
 
 A window titled *SPT Launcher* opens and renders the page ("Lade…"), so the
 native path no longer depends on the id AnkerGames chooses.
+
+## 7 · Clean Play test after the fix (2026-11-26)
+
+Anker Launcher 0.1.30, KDE Wayland, umu-launcher 1.4.3 and Proton Experimental.
+The AppImage was started with APPIMAGE_EXTRACT_AND_RUN=1 because FUSE mounting
+was unavailable in the test environment. No GTK backend override was set.
+
+13:26:19 CET — One Play click on Launcher.exe. No SPT launcher, SPT server or
+Tarkov process was running before the click. Exactly one SPT.Launcher.Linux
+and one SPT.Server.Linux started. The native SPT Launcher - Servers window
+rendered and displayed Local Server as ONLINE.
+https://127.0.0.1:6969/launcher/v2/ping returned HTTP 200.
+
+13:28:00 CET — One START GAME click after selecting the local profile.
+AnkerGames' game log recorded "Running 'Proton - Experimental'". The
+EscapeFromTarkov.exe process reached Choose Your Faction, with in-game
+FIKA 2.4.2 and SPT 4.1.2 labels. Server log excerpts:
+
+```
+[Client Request] /fika/client/check/version
+[Client Request] /client/game/start
+[Client Request] /client/game/profile/list
+```
+
+The stop script closed the game, its Wine session and the native launcher.
+The server still returned HTTP 200. A second invocation with --server closed
+the server and left no TCP listener on port 6969.
+
+Forcing GDK_BACKEND=x11 in an earlier attempt on this Wayland session also
+started exactly one native launcher and server, but the launcher window was
+blank. The two processes were closed before the clean Wayland test.
