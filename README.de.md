@@ -110,8 +110,8 @@ Vier Dokumente, auf Englisch und Deutsch. Sie bauen aufeinander auf:
 |---|---|---|---|
 | Ursachen | [root-cause.md](docs/en/root-cause.md) | [ursachen.md](docs/de/ursachen.md) | Funktionsweise, Defekt A und B, Referenzcode, Verifikation |
 | Spiele | [per-game.md](docs/en/per-game.md) | [spiele.md](docs/de/spiele.md) | Matrix der fünf Spiele, Marker-Layouts, nur scheinbar betroffene Titel |
-| Evidenz | [evidence.md](docs/en/evidence.md) | [evidenz.md](docs/de/evidenz.md) | kommentierte Log-Auszüge 01–07 und das Evidenzblatt |
-| Tarkov-Fix | [dotnet-installer.md](docs/en/dotnet-installer.md) | [dotnet-installer.md](docs/de/dotnet-installer.md) | fehlende .NET Desktop Runtime im Prefix 3089 |
+| Evidenz | [evidence.md](docs/en/evidence.md) | [evidenz.md](docs/de/evidenz.md) | kommentierte Log-Auszüge 01–08 und das Evidenzblatt |
+| Tarkov-Fix | [dotnet-installer.md](docs/en/dotnet-installer.md) | [dotnet-installer.md](docs/de/dotnet-installer.md) | fehlende .NET-Runtimes im Prefix 3089 und der native SPT-Server |
 
 Die ersten drei in dieser Reihenfolge lesen. Der Tarkov-Fix ist unabhängig von
 den Online-Fix-Defekten.
@@ -133,7 +133,20 @@ scripts/install-dotnet-runtime.sh "<prefix>"
 Das Skript entpackt die offiziellen win-x64-Runtime-Zips nach
 `<prefix>/drive_c/Program Files/dotnet` — den Standardpfad, den der .NET-App-Host
 durchsucht. Verifiziert mit Proton Experimental: Der Setup-Assistent startet
-und läuft ohne Umgebungsvariable. Details, Screenshots und Fehlersuche:
+und läuft ohne Umgebungsvariable.
+
+Für den lokalen Server fehlen danach noch zwei Teile. `SPT.Server.exe` braucht
+zusätzlich `Microsoft.AspNetCore.App` (`--aspnet`), und unter Wine scheitert er
+anschließend beim Erzeugen seines TLS-Zertifikats (CNG/`CopyWithPrivateKey` ist
+nicht implementiert). Das Paket bringt einen nativen Server mit, der funktioniert:
+
+```sh
+scripts/install-dotnet-runtime.sh "<prefix>" --aspnet
+scripts/spp-tarkov-server.sh "<Spielordner>"   # startet SPT_Runtime/SPT.Server.Linux
+```
+
+Nach etwa 40 s steht die Karte „Local Server“ auf ONLINE und bleibt nutzbar.
+Details, Screenshots und Fehlersuche:
 [docs/de/dotnet-installer.md](docs/de/dotnet-installer.md).
 
 ---
@@ -145,9 +158,10 @@ README.md                          diese Übersicht (Englisch, Standard)
 README.de.md                       dieselbe Übersicht auf Deutsch
 docs/en/                           root-cause, per-game, evidence, dotnet-installer
 docs/de/                           deutsche Fassung derselben vier Dokumente
-evidence/                          rohe Log-Auszüge 01–07, auf die die Docs verweisen
+evidence/                          rohe Log-Auszüge 01–08, auf die die Docs verweisen
 scripts/fix-reference.sh           Referenz-Implementierung beider Online-Fix-Fixes
-scripts/install-dotnet-runtime.sh  installiert .NET Desktop Runtime 10 in einen Prefix
+scripts/install-dotnet-runtime.sh  installiert .NET-Runtimes 10 in einen Prefix
+scripts/spp-tarkov-server.sh       startet den nativen SPT-Server (SPP Tarkov)
 assets/before-after.svg            das Diagramm oben
 assets/evidence.png                Evidenzblatt (Logs, vorher/nachher)
 assets/spp-tarkov-*.png            Installer-Dialog und Setup-Assistent (vorher/nachher)

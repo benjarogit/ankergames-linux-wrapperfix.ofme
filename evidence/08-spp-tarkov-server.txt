@@ -1,0 +1,67 @@
+# SPP Tarkov (3089) — the Windows server vs. the native one
+
+Three stages, same game directory, same prefix, Proton Experimental (wine-11.0).
+
+---
+
+## 1 · Windows server without Microsoft.AspNetCore.App
+
+Source: stdout of `SPT.Server.exe`, started through the Proton wine binary
+
+```
+You must install or update .NET to run this application.
+
+App: C:\Games\SPP-Tarkov\SPT_Runtime\SPT.Server.exe
+Architecture: x64
+Framework: 'Microsoft.AspNetCore.App', version '10.0.0' (x64)
+.NET location: C:\Program Files\dotnet
+
+No frameworks were found.
+```
+
+`Microsoft.NETCore.App` and `Microsoft.WindowsDesktop.App` were already
+installed in the prefix; only the ASP.NET Core runtime was missing.
+
+---
+
+## 2 · Windows server with the ASP.NET runtime: certificate fails
+
+Source: `SPT_Runtime/user/logs/spt/spt20261126.log`
+
+```
+[2026-11-26 08:24:05.411][Critical][SPTarkov.Server.Core] The server has unexpectedly stopped, reach out to the support channel in our Discord server. Include a screenshot of this message and the surrounding error(s) above and below
+Erfolg.
+   at System.Security.Cryptography.X509Certificates.CertificateHelpers.CopyWithEphemeralKey(CertificatePal certificate, CngKey cngKey)
+   at System.Security.Cryptography.X509Certificates.CertificatePal.CopyWithPrivateKey(RSA rsa)
+   at System.Security.Cryptography.X509Certificates.RSACertificateExtensions.CopyWithPrivateKey(X509Certificate2 certificate, RSA privateKey)
+   at System.Security.Cryptography.X509Certificates.CertificateRequest.CreateSelfSigned(DateTimeOffset notBefore, DateTimeOffset notAfter)
+   at SPTarkov.Server.Core.Helpers.Server.CertificateHelper.GenerateSelfSignedCertificate()
+   at SPTarkov.Server.Core.Helpers.Server.CertificateHelper.TryLoadCertificate(X509Certificate2& certificate)
+   at SPTarkov.Server.Core.Helpers.Server.CertificateHelper.LoadOrGenerateCertificate()
+   at SPTarkov.Server.Program.<>c__DisplayClass5_0.<ConfigureKestrel>b__1(HttpsConnectionAdapterOptions httpsOptions)
+```
+
+`Erfolg.` is the German text of `ERROR_SUCCESS`: Windows reports success while
+the CNG call returns nothing usable. A ready-made PEM pair in `user/certs/`
+takes the same path (`TryLoadCertificate`), so it fails identically.
+
+---
+
+## 3 · Native server: same files, same port
+
+Source: `~/.local/share/spt-server.log`, started with `scripts/spp-tarkov-server.sh`
+
+```
+Web authentication is enabled.
+Webserver unter https://0.0.0.0:6969 gestartet
+Websocket auf wss://0.0.0.0:6969 gestartet
+Der Server ist gestartet, fröhliches Spielen
+```
+
+```
+$ curl -sk -o /dev/null -w '%{http_code}\n' https://127.0.0.1:6969/launcher/v2/ping
+200
+```
+
+Cold start to a answering port: ~38 s. The Windows launcher shows the card as
+ONLINE without any change of its own.

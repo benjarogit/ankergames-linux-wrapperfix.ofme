@@ -84,9 +84,11 @@ Co-op would require a separate community mod (e.g. Fika) and a hosted server.
 Catalog metadata (`multiplayer: false`, `online_fix: false`) already reflects
 this.
 
-It does have its own Linux blocker: the installer is a framework-dependent
-.NET 10 WPF app and the prefix has no `Microsoft.WindowsDesktop.App`. That is
-fixed by provisioning the official runtime zips into the prefix — see
+It does have its own Linux blockers: the installer is a framework-dependent
+.NET 10 WPF app and the prefix has no `Microsoft.WindowsDesktop.App`. After that
+the local server fails twice — it needs `Microsoft.AspNetCore.App`, and under
+Wine it cannot create its TLS certificate. Both are covered by provisioning the
+official runtime zips plus running the native `SPT.Server.Linux` — see
 [dotnet-installer.md](dotnet-installer.md).
 
 ### Call of Duty: Modern Warfare II (2522)

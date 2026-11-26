@@ -86,10 +86,12 @@ keiner der Fixes. Koop bräuchte einen separaten Community-Mod (z. B. Fika) und
 einen gehosteten Server. Die Katalog-Metadaten (`multiplayer: false`,
 `online_fix: false`) bilden das bereits ab.
 
-Es hat aber einen eigenen Linux-Blocker: Der Installer ist eine
-framework-abhängige .NET-10-WPF-App, und im Prefix fehlt
-`Microsoft.WindowsDesktop.App`. Das behebt das Provisioning der offiziellen
-Runtime-Zips in den Prefix — siehe [dotnet-installer.md](dotnet-installer.md).
+Es hat aber eigene Linux-Blocker: Der Installer ist eine framework-abhängige
+.NET-10-WPF-App, und im Prefix fehlt `Microsoft.WindowsDesktop.App`. Danach
+scheitert der lokale Server zweimal — er braucht `Microsoft.AspNetCore.App`, und
+unter Wine kann er sein TLS-Zertifikat nicht erzeugen. Beides löst das
+Provisioning der offiziellen Runtime-Zips plus der native `SPT.Server.Linux` —
+siehe [dotnet-installer.md](dotnet-installer.md).
 
 ### Call of Duty: Modern Warfare II (2522)
 

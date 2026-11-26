@@ -21,6 +21,7 @@ ones; user names are omitted.
 | [`05-scp5k-steam-init.txt`](../../evidence/05-scp5k-steam-init.txt) | `Pandemic.log` | `[AppId: 872670] Client API initialized 1` after the files were placed |
 | [`06-steam-tracks-480.txt`](../../evidence/06-steam-tracks-480.txt) | `gameprocess_log.txt` | Steam tracks the externally started games as AppID 480 |
 | [`07-prefix-layout.txt`](../../evidence/07-prefix-layout.txt) | `ls -l` | the five expected files in the prefix |
+| [`08-spp-tarkov-server.txt`](../../evidence/08-spp-tarkov-server.txt) | app host output, SPT server log | missing ASP.NET runtime, the CNG certificate failure, the native server answering |
 
 ---
 
@@ -104,3 +105,18 @@ UE log.
 
 `steam.exe` is `legacycompat/SteamService.exe` renamed — the same thing Proton's
 own prefix setup does.
+
+## 08 · SPP Tarkov: the Windows server vs. the native one
+
+```
+Framework: 'Microsoft.AspNetCore.App', version '10.0.0' (x64)
+No frameworks were found.
+Erfolg.   at ...CertificatePal.CopyWithPrivateKey(RSA rsa)
+Webserver unter https://0.0.0.0:6969 gestartet
+```
+
+Three stages of the same server: the ASP.NET Core runtime is missing in the
+prefix, then the self-signed certificate cannot be created under Wine, then the
+native build answers on the same port (`ping` → 200). Full excerpts:
+[`08-spp-tarkov-server.txt`](../../evidence/08-spp-tarkov-server.txt), context in
+[dotnet-installer.md](dotnet-installer.md).

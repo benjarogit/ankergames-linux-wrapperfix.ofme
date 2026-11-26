@@ -109,8 +109,8 @@ Four documents, English and German. They build on each other:
 |---|---|---|---|
 | Root cause | [root-cause.md](docs/en/root-cause.md) | [ursachen.md](docs/de/ursachen.md) | how the builds work, defect A and B, reference code, verification |
 | Per game | [per-game.md](docs/en/per-game.md) | [spiele.md](docs/de/spiele.md) | the five-game matrix, marker layouts, titles that only look affected |
-| Evidence | [evidence.md](docs/en/evidence.md) | [evidenz.md](docs/de/evidenz.md) | annotated log excerpts 01–07 and the evidence sheet |
-| Tarkov fix | [dotnet-installer.md](docs/en/dotnet-installer.md) | [dotnet-installer.md](docs/de/dotnet-installer.md) | the missing .NET Desktop Runtime in prefix 3089 |
+| Evidence | [evidence.md](docs/en/evidence.md) | [evidenz.md](docs/de/evidenz.md) | annotated log excerpts 01–08 and the evidence sheet |
+| Tarkov fix | [dotnet-installer.md](docs/en/dotnet-installer.md) | [dotnet-installer.md](docs/de/dotnet-installer.md) | missing .NET runtimes in prefix 3089, and the native SPT server |
 
 Read the first three in order. The Tarkov fix is independent of the online-fix
 defects.
@@ -132,7 +132,20 @@ scripts/install-dotnet-runtime.sh "<prefix>"
 It extracts the official win-x64 runtime zips into
 `<prefix>/drive_c/Program Files/dotnet`, the default probe path of the .NET app
 host. Verified with Proton Experimental: the setup wizard starts and runs
-without any environment variable. Details, screenshots and troubleshooting:
+without any environment variable.
+
+The local server needs two more pieces. `SPT.Server.exe` also requires
+`Microsoft.AspNetCore.App` (`--aspnet`), and under Wine it then fails to create
+its TLS certificate (CNG/`CopyWithPrivateKey` is not implemented). The package
+ships a native server, so the working setup is:
+
+```sh
+scripts/install-dotnet-runtime.sh "<prefix>" --aspnet
+scripts/spp-tarkov-server.sh "<game dir>"      # starts SPT_Runtime/SPT.Server.Linux
+```
+
+The launcher's "Local Server" card turns ONLINE after ~40 s and stays usable.
+Details, screenshots and troubleshooting:
 [docs/en/dotnet-installer.md](docs/en/dotnet-installer.md).
 
 ---
@@ -144,9 +157,10 @@ README.md                          this page (English, default)
 README.de.md                       the same overview in German
 docs/en/                           root-cause, per-game, evidence, dotnet-installer
 docs/de/                           German versions of the same four documents
-evidence/                          raw log excerpts 01–07, referenced by the docs
+evidence/                          raw log excerpts 01–08, referenced by the docs
 scripts/fix-reference.sh           reference implementation of both online-fix fixes
-scripts/install-dotnet-runtime.sh  provisions .NET Desktop Runtime 10 into a prefix
+scripts/install-dotnet-runtime.sh  provisions .NET runtimes 10 into a prefix
+scripts/spp-tarkov-server.sh       starts the native SPT server (SPP Tarkov)
 assets/before-after.svg            the pipeline diagram above
 assets/evidence.png                one-page evidence sheet (logs, before/after)
 assets/spp-tarkov-*.png            installer dialog and setup wizard (before/after)

@@ -98,6 +98,104 @@ which the launcher starts afterwards. `Launcher.exe` and the SPT server are
 
 ---
 
+## After the install: "Local Server" stays OFFLINE
+
+Once the wizard has unpacked the game, the launcher shows the server card as
+**Local Server · OFFLINE**. That card is not cosmetic — without the server the
+launcher cannot create a profile or start a raid.
+
+Two separate things are missing.
+
+**1. ASP.NET Core Runtime.** `SPT.Server.exe` needs `Microsoft.AspNetCore.App`
+10.0.x on top of the two runtimes above. Without it the app host stops with:
+
+```
+Framework: 'Microsoft.AspNetCore.App', version '10.0.0' (x64)
+```
+
+Re-run the script with `--aspnet`; it is idempotent and only adds the third
+runtime:
+
+```sh
+scripts/install-dotnet-runtime.sh "<prefix>" --aspnet
+```
+
+**2. Wine cannot create the server certificate.** With the runtime in place the
+server starts, then aborts while generating its self-signed TLS certificate:
+
+```
+System.Security.Cryptography.CryptographicException: Erfolg.
+   at SPTarkov.Server.Core.Utils.CertificateHelper.GenerateSelfSignedCertificate()
+   at System.Security.Cryptography.X509Certificates.X509Certificate2.CopyWithPrivateKey(...)
+```
+
+`CopyWithPrivateKey` goes through CNG, which Proton's Wine does not implement.
+Hand-made PEM files (`user/certs/server.crt` + `server.key`) do not help either:
+loading them uses the same CNG path.
+
+### Fix: run the native server
+
+The package ships the same server as a native Linux build:
+
+```
+SPT_Runtime/SPT.Server.Linux     serves https://127.0.0.1:6969
+```
+
+It needs the .NET 10 **Linux** runtime (Core + ASP.NET Core), for example:
+
+```sh
+curl -sSL https://dot.net/v1/dotnet-install.sh | sh -s -- \
+  --channel 10.0 --runtime aspnetcore --install-dir ~/.local/share/spt-dotnet
+```
+
+Then start it before the launcher:
+
+```sh
+scripts/spp-tarkov-server.sh "<game dir>"
+```
+
+`<game dir>` is the folder that contains `SPT_Runtime`. The script starts the
+server in its own session, so it survives the launcher, waits for
+`/launcher/v2/ping` (about 40 s) and appends to `~/.local/share/spt-server.log`.
+The Windows launcher talks to it unchanged: the card flips to ONLINE and
+profiles work. `--status` and `--stop` are available.
+
+To start it together with the game, hook it into the umu wrapper — the
+`Launcher.exe` case only:
+
+```sh
+case "$1" in
+  *Launcher.exe)
+    [ "${GAMEID:-}" = 3089 ] && \
+      "/path/to/spp-tarkov-server.sh" "<game dir>" >/dev/null 2>&1 || true
+    ;;
+esac
+```
+
+The launcher still tries to start `SPT.Server.exe` itself and that attempt keeps
+failing; it is harmless as long as the native server is already answering.
+
+### Mods with Windows paths
+
+Some mods build paths with backslashes, which are ordinary file name characters
+on Linux. The server then stops at startup with:
+
+```
+Critical exception, stopping server...
+Could not find file '.../user/mods/BoxesAtRef/database\itemsToAdd.json'
+```
+
+Create a link under the literal name:
+
+```sh
+cd "<SPT_Runtime>/user/mods/BoxesAtRef"
+ln -s database/itemsToAdd.json 'database\itemsToAdd.json'
+```
+
+Repeat for every file the mod reads that way.
+
+---
+
 ## Manual alternative
 
 If you prefer not to run the script, the same result:
@@ -118,6 +216,11 @@ WiX/Burn executable and fails in most prefixes. The zips are the reliable path.
 | Symptom | Cause | Fix |
 |---|---|---|
 | Still "You must install .NET Desktop Runtime" | runtime in the wrong prefix, or version < 10.0 | check `<prefix>/drive_c/Program Files/dotnet/shared/Microsoft.WindowsDesktop.App` |
+| `Framework: 'Microsoft.AspNetCore.App', version '10.0.0'` | ASP.NET Core runtime missing in the prefix | `scripts/install-dotnet-runtime.sh "<prefix>" --aspnet` |
+| `CryptographicException: Erfolg.` at `CopyWithPrivateKey` | CNG is not implemented in Proton's Wine | run the native server (above) |
+| `System.ConsolePal.set_Title` / "Ungültiger Zugriff" | `SPT.Server.exe` started from a Unix terminal, so it has no Windows console handle | start it with `wine start` instead, or use the native server |
+| "Local Server" stays OFFLINE without an error | server not running, or still booting (~40 s) | `scripts/spp-tarkov-server.sh "<game dir>" --status` |
+| `Could not find file '...database\itemsToAdd.json'` | mod builds a path with a backslash | link the file under the literal name (above) |
 | `Nicht behebbarer Systemfehler` / `MS.Internal.Invariant.FailFast` right after the window appears | no usable font family in the prefix (WPF fails while shaping text) | `WINEPREFIX="<prefix>" winetricks -q corefonts` |
 | `Failed to create CoreCLR` or an immediate crash | W^X / write-xor-execute under Wine | launch with `DOTNET_EnableWriteXorExecute=0` |
 | Installer starts, but the launcher keeps offering the installer | game installed to a non-default directory | reinstall into the game folder the launcher manages |
