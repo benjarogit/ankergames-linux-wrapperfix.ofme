@@ -161,9 +161,32 @@ case "\${1##*/}" in
       spt_dir="\$(cd "\$(dirname "\$1")" 2>/dev/null && pwd)"
       [ -x "\$spt_dir/SPT_Runtime/SPT.Launcher.Linux" ] || spt_dir=""
       if [ -n "\$spt_dir" ]; then
-        if ! curl -sk --max-time 2 https://127.0.0.1:6969/launcher/v2/ping >/dev/null 2>&1; then
-          ( cd "\$spt_dir/SPT_Runtime" && \\
-            DOTNET_ROOT="$dotnet_root" setsid -f ./SPT.Server.Linux >>"\$HOME/.local/share/spt-server.log" 2>&1 </dev/null )
+        spt_ping="https://127.0.0.1:6969/launcher/v2/ping"
+        spt_log="\$HOME/.local/share/spt-server.log"
+        spt_server_ready() {
+          [ "\$(curl -sk --max-time 2 -o /dev/null -w '%{http_code}' "\$spt_ping")" = 200 ]
+        }
+
+        if ! spt_server_ready; then
+          mkdir -p "\$(dirname "\$spt_log")" || exit 1
+          (
+            # Serialize the start and readiness check when Play is invoked twice.
+            flock -w 125 9 || exit 1
+            if ! spt_server_ready; then
+              cd "\$spt_dir/SPT_Runtime" || exit 1
+              echo "SPP Tarkov: waiting for the native SPT server"
+              DOTNET_ROOT="$dotnet_root" setsid -f ./SPT.Server.Linux \
+                >>"\$spt_log" 2>&1 </dev/null 9>&- || exit 1
+              spt_deadline=\$((\$(date +%s) + 120))
+              until spt_server_ready; do
+                [ "\$(date +%s)" -lt "\$spt_deadline" ] || exit 1
+                sleep 1
+              done
+            fi
+          ) 9>"\$spt_log.start.lock" || {
+            printf 'SPP Tarkov: server did not become ready. See %s\n' "\$spt_log" >&2
+            exit 1
+          }
         fi
         echo "SPP Tarkov: starting the native SPT launcher"
         cd "\$spt_dir/SPT_Runtime" || exit 1

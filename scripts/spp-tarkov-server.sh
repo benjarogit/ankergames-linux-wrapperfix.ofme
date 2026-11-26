@@ -30,7 +30,9 @@ usage() { sed -n '2,22p' "$0"; }
 ping_url=https://127.0.0.1:6969/launcher/v2/ping
 log="${XDG_STATE_HOME:-$HOME/.local/share}/spt-server.log"
 
-alive() { curl -sk --max-time 2 -o /dev/null "$ping_url" 2>/dev/null; }
+alive() {
+  [ "$(curl -sk --max-time 2 -o /dev/null -w '%{http_code}' "$ping_url")" = 200 ]
+}
 
 game=
 wait_s=120

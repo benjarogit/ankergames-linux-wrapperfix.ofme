@@ -80,7 +80,8 @@ Was die Befehle tun:
 
 ![Der native SPT-Launcher](../../../assets/spp-tarkov-launcher-linux.png)
 
-Der Wrapper startet den nativen Server automatisch vor dem Launcher.
+Beim Kaltstart wartet der Wrapper auf die Antwort des Servers. Bis der
+Launcher erscheint, kann es rund 40 Sekunden dauern.
 
 ---
 
@@ -236,7 +237,7 @@ AnkerGames neu starten — das Badge ist veraltet.
 | `Framework: 'Microsoft.AspNetCore.App', version '10.0.0'` | ASP.NET Core fehlt | `scripts/install-dotnet-runtime.sh "<prefix>" --aspnet` |
 | `CryptographicException: Erfolg.` bei `CopyWithPrivateKey` | CNG ist in Protons Wine nicht implementiert | nativen Server nutzen |
 | `System.ConsolePal.set_Title` / „Ungültiger Zugriff" | `SPT.Server.exe` aus einem Unix-Terminal gestartet | mit `wine start` starten, oder den nativen Server nutzen |
-| `Local Server` bleibt OFFLINE ohne Fehler | Server läuft nicht oder bootet noch (~40 s) | `scripts/spp-tarkov-server.sh "<Spielordner>" --status` |
+| Launcher öffnet sich nicht und das Log meldet einen Server-Timeout | Der lokale Server hat innerhalb von zwei Minuten nicht geantwortet | `~/.local/share/spt-server.log` ansehen und `scripts/spp-tarkov-server.sh "<Spielordner>" --status` ausführen |
 | `Could not find file '...database\itemsToAdd.json'` | ein Mod baut einen Pfad mit Backslash | `ln -s database/itemsToAdd.json 'database\itemsToAdd.json'` |
 | `Nicht behebbarer Systemfehler` / `MS.Internal.Invariant.FailFast` | keine nutzbare Schriftfamilie im Prefix | `WINEPREFIX="<prefix>" winetricks -q corefonts` |
 | `Failed to create CoreCLR` | W^X unter Wine | mit `DOTNET_EnableWriteXorExecute=0` starten |

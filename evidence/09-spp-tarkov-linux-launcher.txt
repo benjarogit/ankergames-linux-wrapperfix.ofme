@@ -152,3 +152,15 @@ the server and left no TCP listener on port 6969.
 Forcing GDK_BACKEND=x11 in an earlier attempt on this Wayland session also
 started exactly one native launcher and server, but the launcher window was
 blank. The two processes were closed before the clean Wayland test.
+
+## 8 · Wait for the server on a cold start (2026-11-26)
+
+A later Play click opened the native launcher before the server could accept
+connections. The launcher logged connection refused at 127.0.0.1:6969
+while the server was loading. Within around 40 seconds of that click the
+same server was listening and the launcher ping returned HTTP 200.
+
+The wrapper now waits for HTTP 200 before launching the native client and
+reports the server log path if startup times out. A shell harness verified
+an already-ready server, delayed HTTP 200, parallel requests sharing one
+server startup, and a timeout that leaves the launcher closed.
