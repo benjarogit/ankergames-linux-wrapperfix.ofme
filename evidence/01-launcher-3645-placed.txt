@@ -1,0 +1,12 @@
+# ~/.local/share/net.ankergames.launcher/logs/anker.2026-11-25.log (excerpt)
+# HYPERCHARGE (3645): marker at depth 4 -> files are placed.
+
+2026-11-25T16:24:58.875803Z  INFO launch started game=3645
+2026-11-25T16:24:59.125352Z  INFO Steam's client files were placed in the game's prefix files=5
+2026-11-25T16:24:59.194668Z  INFO loader and Python variables the game's command gets set="none"
+2026-11-25T16:24:59.195016Z  INFO game output is written to its own log log=~/.local/share/net.ankergames.launcher/logs/games/prefix-3645.log
+2026-11-25T16:25:00.700259Z  INFO game started game=3645 program="Unboxed.exe"
+2026-11-25T16:25:03.587849Z  INFO download transfer ended host=tunnel5.dlproxy.uk outcome="Cancelled" fetched=60222169925 seconds=1597 average=37709561
+2026-11-25T16:25:03.650760Z  INFO finished kind="download" file=1940 outcome=Cancelled
+2026-11-25T16:25:08.733861Z  INFO the game is on screen game=3645 seconds=9
+2026-11-25T16:28:16.001421Z  INFO game exited game=3645 minutes=3

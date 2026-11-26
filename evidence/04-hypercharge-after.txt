@@ -1,0 +1,6 @@
+# HYPERCHARGE (3645) - Unboxed/Saved/Logs/Unboxed.log
+# AFTER WINEDLLOVERRIDES=winmm=n,b (2026-11-25 17:59).
+
+LogSteamShared: Steam SDK Loaded!
+LogOnline: STEAM: Steam User is subscribed 1
+LogOnline: STEAM: [AppId: 523660] Client API initialized 1

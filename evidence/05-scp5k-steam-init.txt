@@ -1,0 +1,8 @@
+# SCP 5K (2006) - .../AppData/Local/Pandemic/Saved/Logs/Pandemic.log
+# AFTER the five Steam client files were placed in the prefix.
+
+LogSteamShared: Display: Loading Steam SDK 1.51
+LogSteamShared: Steam SDK Loaded!
+LogOnline: STEAM: Steam User is subscribed 1
+LogOnline: STEAM: [AppId: 872670] Client API initialized 1
+LogOnline: STEAM: AUTH: Steam Auth Enabled

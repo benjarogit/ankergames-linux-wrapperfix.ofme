@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="560" viewBox="0 0 1200 560" role="img" aria-label="Online-fix launch pipeline: before and after the launcher fix">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/>
+    </marker>
+    <style>
+      .title { font: 600 22px/1.2 system-ui, -apple-system, Segoe UI, Roboto, sans-serif; fill: #0f172a; }
+      .panel-title { font: 700 18px/1.2 system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+      .panel-sub { font: 400 13px/1.2 system-ui, -apple-system, Segoe UI, Roboto, sans-serif; fill: #475569; }
+      .step-title { font: 600 14px/1.2 system-ui, -apple-system, Segoe UI, Roboto, sans-serif; fill: #0f172a; }
+      .step-sub { font: 400 12px/1.2 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; fill: #475569; }
+      .step-sub-sm { font: 400 11px/1.2 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; fill: #475569; }
+      .note { font: 500 13px/1.2 system-ui, -apple-system, Segoe UI, Roboto, sans-serif; fill: #475569; }
+      .box-bad { fill: #ffffff; stroke: #e7a9a4; }
+      .box-good { fill: #ffffff; stroke: #a7d8b8; }
+      .line { stroke: #94a3b8; stroke-width: 1.6; fill: none; }
+    </style>
+  </defs>
+
+  <text class="title" x="24" y="34">Online-fix launch pipeline on Linux</text>
+
+  <!-- BEFORE -->
+  <rect x="24" y="56" width="556" height="456" rx="14" fill="#fff7f7" stroke="#f2b8b5"/>
+  <text class="panel-title" x="48" y="92" fill="#b42318">BEFORE — broken</text>
+  <text class="panel-sub" x="48" y="114">The fix DLL cannot reach the Steam client.</text>
+
+  <rect class="box-bad" x="48" y="132" width="508" height="62" rx="9"/>
+  <text class="step-title" x="64" y="158">Launcher starts the game via umu-run</text>
+  <text class="step-sub" x="64" y="178">prefix is created, no extra preparation</text>
+
+  <path class="line" d="M 302 194 L 302 214" marker-end="url(#arrow)"/>
+
+  <rect class="box-bad" x="48" y="216" width="508" height="62" rx="9"/>
+  <text class="step-title" x="64" y="242">prefix/drive_c/Program Files (x86)/Steam/</text>
+  <text class="step-sub" x="64" y="262">empty — no steamclient64.dll</text>
+
+  <path class="line" d="M 302 278 L 302 298" marker-end="url(#arrow)"/>
+
+  <rect class="box-bad" x="48" y="300" width="508" height="62" rx="9"/>
+  <text class="step-title" x="64" y="326">OnlineFix64.dll calls LoadLibrary("steamclient64.dll")</text>
+  <text class="step-sub" x="64" y="346">ERROR_MOD_NOT_FOUND (126)</text>
+
+  <path class="line" d="M 302 362 L 302 382" marker-end="url(#arrow)"/>
+
+  <rect class="box-bad" x="48" y="384" width="508" height="62" rx="9"/>
+  <text class="step-title" x="64" y="410">Game aborts before the menu</text>
+  <text class="step-sub" x="64" y="430">Failed to load original steamclient. Error code: 126</text>
+
+  <text class="panel-sub" x="48" y="478">Second failure mode with the same root cause:</text>
+  <text class="step-sub" x="48" y="498">SteamAPI failed to initialize · [AppId: 0]</text>
+
+  <!-- AFTER -->
+  <rect x="620" y="56" width="556" height="456" rx="14" fill="#f4fbf6" stroke="#b7e3c5"/>
+  <text class="panel-title" x="644" y="92" fill="#067647">AFTER — fixed</text>
+  <text class="panel-sub" x="644" y="114">Two rules in the launcher, no game files touched.</text>
+
+  <rect class="box-good" x="644" y="132" width="508" height="62" rx="9"/>
+  <text class="step-title" x="660" y="158">Launcher prepares the prefix before launch</text>
+  <text class="step-sub" x="660" y="178">5 Steam client files copied · winmm=n,b set</text>
+
+  <path class="line" d="M 898 194 L 898 214" marker-end="url(#arrow)"/>
+
+  <rect class="box-good" x="644" y="216" width="508" height="62" rx="9"/>
+  <text class="step-title" x="660" y="242">prefix/drive_c/Program Files (x86)/Steam/</text>
+  <text class="step-sub-sm" x="660" y="262">steamclient64.dll · steamclient.dll · overlay · Steam.dll · steam.exe</text>
+
+  <path class="line" d="M 898 278 L 898 298" marker-end="url(#arrow)"/>
+
+  <rect class="box-good" x="644" y="300" width="508" height="62" rx="9"/>
+  <text class="step-title" x="660" y="326">Native winmm.dll proxy loads OnlineFix64.dll</text>
+  <text class="step-sub" x="660" y="346">native DLL wins over Wine's builtin winmm</text>
+
+  <path class="line" d="M 898 362 L 898 382" marker-end="url(#arrow)"/>
+
+  <rect class="box-good" x="644" y="384" width="508" height="62" rx="9"/>
+  <text class="step-title" x="660" y="410">Steam client connects</text>
+  <text class="step-sub" x="660" y="430">Client API initialized 1 → Steam tracks AppID 480</text>
+
+  <text class="panel-sub" x="644" y="478">Same build, same prefix, no game modification.</text>
+  <text class="step-sub" x="644" y="498">Co-op with Windows players works.</text>
+
+  <text class="note" x="600" y="542" text-anchor="middle">Fix = prepare the prefix + one Wine DLL override · ~20 lines in the launch pipeline</text>
+</svg>

@@ -1,0 +1,9 @@
+# ~/.local/share/Steam/logs/gameprocess_log.txt (excerpt)
+# Steam tracks the externally started game as AppID 480 (Spacewar).
+
+[2026-11-25 17:46:45] AppID 480 PID 222824 was launched outside Steam, using container PID 222681 as root
+[2026-11-25 17:59:30] AppID 480 adding PID 230454 as a tracked process
+[2026-11-25 17:59:30] AppID 480 PID 230454 was launched outside Steam, using container PID 230283 as root
+[2026-11-25 18:01:17] AppID 480 adding PID 231790 as a tracked process
+[2026-11-25 18:01:17] AppID 480 PID 231790 was launched outside Steam, using container PID 231597 as root
+[2026-11-25 18:11:01] AppID 480 adding PID 236022 as a tracked process

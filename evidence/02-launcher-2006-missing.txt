@@ -1,0 +1,13 @@
+# ~/.local/share/net.ankergames.launcher/logs/anker.2026-11-25.log (excerpt)
+# SCP 5K (2006): marker at depth 8 -> launch starts, but no
+# "Steam's client files were placed" line follows.
+
+2026-11-25T16:28:53.503652Z  INFO launch started game=2006
+2026-11-25T16:28:59.376305Z  INFO a game runtime installed game=2006
+2026-11-25T16:29:03.325914Z  INFO a game runtime installed game=2006
+2026-11-25T16:29:25.787951Z  INFO a game runtime installed game=2006
+2026-11-25T16:29:42.627703Z  INFO a game runtime installed game=2006
+2026-11-25T16:29:45.746097Z  INFO a game runtime installed game=2006
+2026-11-25T16:29:45.857519Z  INFO loader and Python variables the game's command gets set="none"
+2026-11-25T16:29:45.857639Z  INFO game output is written to its own log log=~/.local/share/net.ankergames.launcher/logs/games/prefix-2006.log
+2026-11-25T16:29:47.359043Z  INFO download transfer ended host=tunnel5.dlproxy.uk outcome="Cancelled" fetched=3545717712 seconds=91 average=38963930

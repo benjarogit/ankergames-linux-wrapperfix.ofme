@@ -1,0 +1,8 @@
+# Expected prefix layout (game 3645, files placed by the launcher):
+
+-rwxr-xr-x 1 benny benny  1692312 13. Nov 03:05 GameOverlayRenderer64.dll
+drwxr-xr-x 2 benny benny     4096 25. Nov 17:25 steamapps
+-rwxr-xr-x 1 benny benny 26787480 13. Nov 03:05 steamclient64.dll
+-rwxr-xr-x 1 benny benny 21837464 13. Nov 03:05 steamclient.dll
+-rwxr-xr-x 1 benny benny   385312 23. Jan 2018  Steam.dll
+-rwxr-xr-x 1 benny benny  2812312 28. Okt 2021  steam.exe
