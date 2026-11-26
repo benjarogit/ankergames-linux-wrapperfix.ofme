@@ -86,6 +86,10 @@ keiner der Fixes. Koop bräuchte einen separaten Community-Mod (z. B. Fika) und
 einen gehosteten Server. Die Katalog-Metadaten (`multiplayer: false`,
 `online_fix: false`) bilden das bereits ab.
 
+Es hat aber einen eigenen Linux-Blocker: Der Installer ist eine
+framework-abhängige .NET-10-WPF-App, und im Prefix fehlt
+`Microsoft.WindowsDesktop.App`. Siehe [dotnet-installer.md](dotnet-installer.md).
+
 ### Call of Duty: Modern Warfare II (2522)
 
 Ein Goldberg-/Offline-Build (`steam_settings/`, `steam_api64.dll`,

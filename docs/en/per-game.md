@@ -84,6 +84,10 @@ Co-op would require a separate community mod (e.g. Fika) and a hosted server.
 Catalog metadata (`multiplayer: false`, `online_fix: false`) already reflects
 this.
 
+It does have its own Linux blocker: the installer is a framework-dependent
+.NET 10 WPF app and the prefix has no `Microsoft.WindowsDesktop.App`. See
+[dotnet-installer.md](dotnet-installer.md).
+
 ### Call of Duty: Modern Warfare II (2522)
 
 A Goldberg/offline build (`steam_settings/`, `steam_api64.dll`,

@@ -102,6 +102,27 @@ Der genaue Code steht in [`scripts/fix-reference.sh`](scripts/fix-reference.sh)
 
 ---
 
+## Verwandt: SPP Tarkov braucht die .NET Desktop Runtime
+
+Ein anderes Problem mit demselben Muster — eine fehlende Voraussetzung im
+Prefix, kein Steam-Fehler. `SPP_Tarkov_Installer.exe` (Spiel 3089) ist eine
+framework-abhängige WPF-App für .NET 10, und im Prefix fehlt
+`Microsoft.WindowsDesktop.App`. Der App-Host bricht ab mit *„You must install
+.NET Desktop Runtime to run this application“*.
+
+Ein Befehl behebt das, ohne einen Windows-Installer auszuführen:
+
+```sh
+scripts/install-dotnet-runtime.sh "<prefix>"
+```
+
+Das Skript entpackt die offiziellen win-x64-Runtime-Zips nach
+`<prefix>/drive_c/Program Files/dotnet` — den Standardpfad, den der .NET-App-Host
+durchsucht. Details, Screenshots und Fehlersuche:
+[docs/de/dotnet-installer.md](docs/de/dotnet-installer.md).
+
+---
+
 ## Aufbau des Repos
 
 ```
@@ -110,11 +131,14 @@ README.de.md               dieselbe Übersicht auf Deutsch
 docs/en/root-cause.md      technische Analyse: Hintergrund, beide Defekte, Evidenz
 docs/en/per-game.md        Spiel-Matrix, Marker-Tiefen, nicht betroffene Titel
 docs/en/evidence.md        kommentierte Log-Auszüge und der Evidenz-Screenshot
-docs/de/…                  deutsche Fassung der drei Dokumente
+docs/en/dotnet-installer.md  SPP Tarkov: fehlende .NET Desktop Runtime im Prefix
+docs/de/…                  deutsche Fassung der vier Dokumente
 evidence/                  rohe Log-Auszüge (01–07), auf die die Docs verweisen
 scripts/fix-reference.sh   Referenz-Implementierung beider Fixes
+scripts/install-dotnet-runtime.sh  installiert .NET Desktop Runtime 10 in einen Prefix
 assets/before-after.svg    das Diagramm oben
 assets/evidence.png        Evidenzblatt (Logs, vorher/nachher)
+assets/spp-tarkov-*.png    Installer-Dialog und Setup-Assistent (vorher/nachher)
 ```
 
 ---
