@@ -91,3 +91,32 @@ effect on the white window or the cursor. Photino passes its own
 WebView2 ignores the external arguments once the app supplies its own. Forcing
 `PROTON_USE_WINED3D=1` makes the Windows launcher paint, but the game inherits
 it and loses DXVK.
+
+## 6 · Play uses "umu-<n>", not "3089" as GAMEID
+
+The first wrapper block keyed on `GAMEID=3089`. A real Play click from Anker
+Launcher 0.1.30 passes a per-game umu id instead:
+
+```
+$ tr '\0' '\n' < /proc/<umu-run pid>/environ | grep '^GAMEID='
+GAMEID=umu-3932890
+```
+
+The block therefore did not trigger, and the Windows launcher
+(`S:\Games\AnkerGames\Games\Escape from Tarkov-3089\SPT_Runtime\SPT.Launcher.exe`)
+started under Proton — the white window titled *SPP Tarkov - Servers*.
+
+The block now keys on the file, not the id: if `SPT_Runtime/SPT.Launcher.Linux`
+sits next to the `Launcher.exe` that umu-run was called with, the native
+launcher starts. Test with the same environment and working directory the
+launcher uses:
+
+```
+$ GAMEID=umu-3932890 WINEPREFIX=…/Prefixes/3089 PROTONPATH=…/Proton\ -\ Experimental \
+    ~/.local/bin/umu-run "$PWD/Launcher.exe"
+SPP Tarkov: starting the native SPT launcher
+Photino.NET: "SPT Launcher".SetIconFile(/tmp/SPT.Launcher/spt-logo.ico)
+```
+
+A window titled *SPT Launcher* opens and renders the page ("Lade…"), so the
+native path no longer depends on the id AnkerGames chooses.

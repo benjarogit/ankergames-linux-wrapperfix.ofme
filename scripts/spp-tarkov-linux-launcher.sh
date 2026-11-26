@@ -16,8 +16,10 @@
 # through umu/Proton itself. This script
 #   1. points the launcher config at the Linux paths (game folder, prefix,
 #      umu-run, Proton), and
-#   2. adds a guarded block to the umu wrapper so that "Play" (GAMEID 3089,
+#   2. adds a guarded block to the umu wrapper so that "Play" (the game's
 #      Launcher.exe) starts the native launcher instead of the Windows one.
+#      The block keys on the file next to Launcher.exe, not on GAMEID:
+#      AnkerGames uses "3089" for some installs and "umu-<n>" for others.
 #
 # Usage:
 #   ./spp-tarkov-linux-launcher.sh <prefix>
@@ -145,23 +147,20 @@ print(f"set: {path}")
 PY
 fi
 
-# 2 · umu wrapper: start the native launcher for GAMEID 3089
+# 2 · umu wrapper: start the native launcher for the game's Launcher.exe
 begin="# >>> SPP Tarkov native launcher"
 end="# <<< SPP Tarkov native launcher"
 [ -f "$wrapper" ] || die "no umu wrapper at $wrapper — install one first (see README)"
 
-if grep -qF "$begin" "$wrapper"; then
-  echo "ok: $wrapper already starts the native launcher"
-else
-  block=$(mktemp)
-  cat >"$block" <<EOF
+block=$(mktemp)
+cat >"$block" <<EOF
 $begin (managed by spp-tarkov-linux-launcher.sh) >>>
 case "\${1##*/}" in
   Launcher.exe)
-    if [ "\${GAMEID:-}" = "3089" ] && [ -z "\${SPP_WINE_LAUNCHER:-}" ]; then
+    if [ -z "\${SPP_WINE_LAUNCHER:-}" ]; then
       spt_dir="\$(cd "\$(dirname "\$1")" 2>/dev/null && pwd)"
-      [ -x "\$spt_dir/SPT_Runtime/SPT.Launcher.Linux" ] || spt_dir="\$PWD"
-      if [ -x "\$spt_dir/SPT_Runtime/SPT.Launcher.Linux" ]; then
+      [ -x "\$spt_dir/SPT_Runtime/SPT.Launcher.Linux" ] || spt_dir=""
+      if [ -n "\$spt_dir" ]; then
         if ! curl -sk --max-time 2 https://127.0.0.1:6969/launcher/v2/ping >/dev/null 2>&1; then
           ( cd "\$spt_dir/SPT_Runtime" && \\
             DOTNET_ROOT="$dotnet_root" setsid -f ./SPT.Server.Linux >>"\$HOME/.local/share/spt-server.log" 2>&1 </dev/null )
@@ -176,40 +175,45 @@ case "\${1##*/}" in
 esac
 $end <<<
 EOF
-  if [ "$dry" = 1 ]; then
-    echo "would: insert the native-launcher block into $wrapper"
-  else
-    command -v python3 >/dev/null 2>&1 || die "python3 is required"
-    python3 - "$wrapper" "$block" "$begin" <<'PY'
+if [ "$dry" = 1 ]; then
+  echo "would: write the native-launcher block into $wrapper"
+else
+  command -v python3 >/dev/null 2>&1 || die "python3 is required"
+  python3 - "$wrapper" "$block" "$begin" "$end" <<'PY'
 import os, shutil, sys, time
 
-wrapper, block_path, marker = sys.argv[1:4]
-lines = open(wrapper, encoding="utf-8").read().splitlines(keepends=True)
-block = open(block_path, encoding="utf-8").read()
-if any(marker in line for line in lines):
-    print("ok: block already present")
+wrapper, block_path, begin, end = sys.argv[1:5]
+text = open(wrapper, encoding="utf-8").read()
+block = open(block_path, encoding="utf-8").read().rstrip("\n")
+
+if begin in text:
+    # Replace an older version of the block (e.g. one that still keyed on GAMEID).
+    start = text.index(begin)
+    stop = text.index(end, start) + len(end)
+    eol = text.find("\n", stop)
+    stop = len(text) if eol == -1 else eol
+    new = text[:start] + block + text[stop:]
+else:
+    lines = text.splitlines(keepends=True)
+    execs = [i for i, line in enumerate(lines) if line.startswith("exec ")]
+    if not execs:
+        sys.exit("error: no final 'exec' line found in the wrapper")
+    at = execs[-1]
+    new = "".join(lines[:at]) + block + "\n\n" + "".join(lines[at:])
+
+if new == text:
+    print("ok: block already up to date")
     sys.exit(0)
-
-insert_at = None
-for i in range(len(lines) - 1, -1, -1):
-    if lines[i].startswith("exec "):
-        insert_at = i
-        break
-if insert_at is None:
-    sys.exit("error: no final 'exec' line found in the wrapper")
-
 shutil.copy2(wrapper, f"{wrapper}.bak-{time.strftime('%Y%m%d-%H%M%S')}")
-lines.insert(insert_at, block + "\n")
 tmp = f"{wrapper}.tmp"
 with open(tmp, "w", encoding="utf-8") as fh:
-    fh.writelines(lines)
+    fh.write(new)
 os.chmod(tmp, 0o755)
 os.replace(tmp, wrapper)
 print(f"patched: {wrapper}")
 PY
-    rm -f "$block"
-  fi
 fi
+rm -f "$block"
 
 echo
 echo "done. Close AnkerGames, start it again and press Play — the native SPT"

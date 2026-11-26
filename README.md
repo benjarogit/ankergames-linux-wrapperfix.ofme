@@ -1,65 +1,103 @@
 <div align="center">
 
-# Anker Launcher on Linux
+# AnkerGames on Linux
 
-**Online-fix builds never reach Steam. Two launcher-side fixes make them work.**
+**Two fixes for games that fail to start. Neither touches the game files.**
 
-[Deutsch](README.de.md) · [Root cause](docs/en/root-cause.md) · [Per game](docs/en/per-game.md) · [Evidence](docs/en/evidence.md) · [Tarkov fix](docs/en/dotnet-installer.md) · [Co-op](docs/en/coop.md)
+[Deutsch](README.de.md) · [Tarkov guide](docs/en/tarkov.md) · [Co-op](docs/en/coop.md) · [Background](docs/en/background.md)
 
 ![platform](https://img.shields.io/badge/platform-Linux-0f172a?style=flat-square)
 ![runtime](https://img.shields.io/badge/runtime-umu%20%2B%20Proton-0f172a?style=flat-square)
-![online-fix verified](https://img.shields.io/badge/online--fix%20verified-5-067647?style=flat-square)
-![game files touched](https://img.shields.io/badge/game%20files%20touched-none-b42318?style=flat-square)
+![game files](https://img.shields.io/badge/game%20files-touched%20none-b42318?style=flat-square)
 
 </div>
 
-![Launch pipeline before and after the fix](assets/before-after.svg)
+AnkerGames starts games through `umu-run` and Proton. Two different things go
+wrong there:
+
+* **Online-fix builds** never reach Steam — a few files are missing in the Wine
+  prefix and one DLL override is not set. Fixes [A and B](#online-fix-builds).
+* **SPP Tarkov** needs .NET runtimes in the prefix and a launcher that is not
+  WebView2 — four commands, see [the Tarkov guide](docs/en/tarkov.md).
+
+## Pick your case
+
+| I want to… | Go to |
+|---|---|
+| play SPP Tarkov | [Tarkov guide](docs/en/tarkov.md) — or the four commands below |
+| play Tarkov co-op with a friend | [Co-op guide](docs/en/coop.md) |
+| fix another AnkerGames title | [Online-fix builds](#online-fix-builds) |
+| understand why it breaks | [Background](docs/en/background.md) |
 
 ---
 
-## The short version
+## SPP Tarkov: four commands
 
-AnkerGames ships "online-fix" builds that keep using Valve's real Steam client:
-a proxy DLL inside the game loads `steamclient64.dll` from the Wine prefix and
-connects it to the Steam client running on the host. That is why co-op with
-Windows players works — the game talks to real Steam, it just presents itself
-as **AppID 480 (Spacewar)**.
+Run them from this repo. The two paths come from AnkerGames (game → launch
+settings); typical values:
 
-On Linux that chain breaks in two places, and both are in the launcher, not in
-the game:
+| Placeholder | Example |
+|---|---|
+| `<prefix>` | `/mnt/daten/Games/AnkerGames/Games/Prefixes/3089` |
+| `<game dir>` | `/mnt/daten/Games/AnkerGames/Games/Escape from Tarkov-3089` |
 
-| # | What the launcher does wrong | What the player sees |
+```sh
+# 1 · .NET 10 for the installer, the server and the launcher
+scripts/install-dotnet-runtime.sh "<prefix>"
+
+# 2 · ASP.NET Core for the SPT server
+scripts/install-dotnet-runtime.sh "<prefix>" --aspnet
+
+# 3 · Play starts the game, not the installer
+scripts/spp-tarkov-play-target.sh "<game dir>" "<prefix>"
+
+# 4 · Play starts the native launcher, not the white WebView2 window
+scripts/spp-tarkov-linux-launcher.sh "<prefix>"
+```
+
+Close AnkerGames before step 3 (it rewrites its library file on start), then
+open it again and press **Play**.
+
+![The native SPT launcher on Linux](assets/spp-tarkov-launcher-linux.png)
+
+You should get the **SPT Launcher** window, `Local Server` flips to ONLINE after
+about 40 seconds, and **START GAME** launches the game.
+
+> White window or no cursor? Step 4 did not take effect — see
+> [Troubleshooting](docs/en/tarkov.md#troubleshooting).
+> Step 4 also starts the server automatically before the launcher.
+
+The full walkthrough (what each step does, verification, manual fallback,
+troubleshooting) is in **[docs/en/tarkov.md](docs/en/tarkov.md)**.
+
+---
+
+## Co-op
+
+Co-op needs no extra install: SPP Tarkov ships **Fika** (server 2.4.0, client
+2.4.2).
+
+* **Host:** opens `6969/TCP` and `25565/UDP`, hosts the raid.
+* **Guest:** adds `https://<host>:6969` in the SPT Launcher, creates a profile,
+  joins the raid.
+
+Both checklists, the port-forwarding/VPN decision and troubleshooting:
+**[docs/en/coop.md](docs/en/coop.md)**.
+
+---
+
+## Online-fix builds
+
+These builds keep Valve's real Steam client: a proxy DLL inside the game loads
+`steamclient64.dll` from the Wine prefix and connects it to the Steam client on
+the host. On Linux the chain breaks in two places:
+
+| # | What is missing | What you see |
 |---|---|---|
-| **A** | The online-fix marker scan stops too early, so UE4/UE5 builds (marker 7–8 folders deep) never get the five Steam client files copied into their prefix | `Failed to load original steamclient. Error code: 126` — the game closes before the menu |
-| **B** | `WINEDLLOVERRIDES=winmm=n,b` is never set, so Wine ignores the bundled native `winmm.dll` proxy and loads its builtin one instead | Game starts, but `SteamAPI failed to initialize` / `[AppId: 0] Client API initialized 0` — no friends, no lobbies |
+| **A** | five Steam client files in the prefix | `Failed to load original steamclient. Error code: 126` — the game closes before the menu |
+| **B** | `WINEDLLOVERRIDES=winmm=n,b` | game starts, but `[AppId: 0] Client API initialized 0` — no friends, no lobbies |
 
-Fix A copies five files. Fix B appends one environment variable. That is the
-whole change — roughly 20 lines in the launch pipeline.
-
----
-
-## Results
-
-Both fixes applied manually, five games, same builds, same prefixes:
-
-| ID | Game | Fix layout | Real AppID | Steam initialised | Steam tracks |
-|----|------|-----------|-----------|-------------------|--------------|
-| 2006 | SCP 5K | `steam_api64.dll` | 872670 | ✅ `[AppId: 872670] Client API initialized 1` | AppID 480 |
-| 3645 | HYPERCHARGE: Unboxed | `winmm.dll` proxy | 523660 | ✅ `[AppId: 523660] Client API initialized 1` | AppID 480 |
-| 2902 | Abyssus | `winmm.dll` proxy | 1721110 | ✅ fix DLLs mapped in the process | AppID 480 |
-| 4013 | The Ascent | `winmm.dll` + union-crax | 979690 | ✅ fix DLLs mapped in the process | AppID 480 |
-| 4035 | Species: Unknown | `winmm.dll` proxy | 2747330 | ✅ fix DLLs mapped in the process | AppID 480 |
-
-"Steam tracks AppID 480" is expected and correct: the fix spoofs Spacewar so
-Steam allows the client API without owning the game. Friends see you as
-"Spacewar" — that is how these builds work on Windows too.
-
----
-
-## Workaround today (no launcher update needed)
-
-The launcher calls `umu-run`. Put a wrapper earlier in `PATH` and it will
-prepare the prefix before every launch:
+Both fixes live in one wrapper in front of `umu-run`:
 
 ```sh
 mkdir -p ~/.local/bin
@@ -67,158 +105,65 @@ cp scripts/fix-reference.sh ~/.local/bin/umu-run
 chmod +x ~/.local/bin/umu-run
 ```
 
-Make sure `~/.local/bin` comes before `/usr/bin` in `PATH`. The script exits
-with `exec /usr/bin/umu-run "$@"` — adjust that path if your `umu-run` lives
-somewhere else.
+`~/.local/bin` must come before `/usr/bin` in `PATH`. Then start the game as
+usual. Nothing in the game folder changes.
 
-Then start the game from the launcher as usual. Nothing in the game folder is
-modified, and the launcher keeps working normally.
+> Using the Tarkov fix too? Run `scripts/spp-tarkov-linux-launcher.sh` **after**
+> copying the wrapper — it inserts its block into the same file. Copying the
+> wrapper again removes the block; just re-run the script.
 
-> The wrapper also needs to keep doing whatever your setup already needed
-> (e.g. the AppImage environment cleanup). Add those lines at the top; the two
-> fix functions are independent.
+Verified with the same launcher, runtime and prefixes:
 
----
+| ID | Game | Needs | Result |
+|---|---|---|---|
+| 2006 | SCP 5K | A | `[AppId: 872670] Client API initialized 1` |
+| 3645 | HYPERCHARGE: Unboxed | B | `[AppId: 523660] Client API initialized 1` |
+| 2902 | Abyssus | B | fix DLLs mapped, Steam tracks the game |
+| 4013 | The Ascent | A + B | fix DLLs mapped, Steam tracks the game |
+| 4035 | Species: Unknown | B | fix DLLs mapped, Steam tracks the game |
 
-## For the launcher maintainers
-
-Three changes, in order of preference:
-
-1. **Use the catalog flag.** Every affected game is already `online_fix: true`.
-   Place the five files when that flag is set — no filesystem guessing needed.
-   If you keep the scan, walk the whole game root (depth 8 covers every UE4/UE5
-   layout we have seen) and add `union-crax.ini` to the marker list.
-2. **Re-check on every launch.** Proton only copies these files while it
-   creates or upgrades a prefix. After the first start, a launcher update or a
-   reinstall, the folder is empty again.
-3. **Set the DLL override.** When a native `winmm.dll` sits under the game
-   folder, append `winmm=n,b` to `WINEDLLOVERRIDES` — append, never overwrite,
-   because the variable is a semicolon-separated list and may already contain
-   the launcher's own overrides.
-
-The exact code is in [`scripts/fix-reference.sh`](scripts/fix-reference.sh)
-(~60 commented lines, `sh`, no dependencies).
+Steam shows these games as **AppID 480 (Spacewar)** — that is how the builds work
+on Windows too. Details, the five-game matrix and the reference code:
+**[docs/en/background.md](docs/en/background.md)**.
 
 ---
 
 ## Documentation
 
-Four documents, English and German. They build on each other:
-
-| Document | English | Deutsch | Covers |
-|---|---|---|---|
-| Root cause | [root-cause.md](docs/en/root-cause.md) | [ursachen.md](docs/de/ursachen.md) | how the builds work, defect A and B, reference code, verification |
-| Per game | [per-game.md](docs/en/per-game.md) | [spiele.md](docs/de/spiele.md) | the five-game matrix, marker layouts, titles that only look affected |
-| Evidence | [evidence.md](docs/en/evidence.md) | [evidenz.md](docs/de/evidenz.md) | annotated log excerpts 01–10 and the evidence sheet |
-| Tarkov fix | [dotnet-installer.md](docs/en/dotnet-installer.md) | [dotnet-installer.md](docs/de/dotnet-installer.md) | .NET runtimes, native SPT server and launcher, Play target |
-| Co-op | [coop.md](docs/en/coop.md) | [coop.md](docs/de/coop.md) | Fika: host checklist, guest checklist, ports, troubleshooting |
-
-Read the first three in order. The Tarkov fix is independent of the online-fix
-defects.
-
-### SPP Tarkov (3089): .NET Desktop Runtime
-
-A different failure with the same flavour — a missing prerequisite in the
-prefix, not a Steam bug. `SPP_Tarkov_Installer.exe` is a framework-dependent
-WPF app for .NET 10, and the prefix has no `Microsoft.WindowsDesktop.App`, so
-the app host stops with *"You must install .NET Desktop Runtime to run this
-application"*.
-
-One command fixes it, without running any Windows installer:
-
-```sh
-scripts/install-dotnet-runtime.sh "<prefix>"
-```
-
-It extracts the official win-x64 runtime zips into
-`<prefix>/drive_c/Program Files/dotnet`, the default probe path of the .NET app
-host. Verified with Proton Experimental: the setup wizard starts and runs
-without any environment variable.
-
-The local server needs two more pieces. `SPT.Server.exe` also requires
-`Microsoft.AspNetCore.App` (`--aspnet`), and under Wine it then fails to create
-its TLS certificate (CNG/`CopyWithPrivateKey` is not implemented). The package
-ships a native server, so the working setup is:
-
-```sh
-scripts/install-dotnet-runtime.sh "<prefix>" --aspnet
-scripts/spp-tarkov-server.sh "<game dir>"      # starts SPT_Runtime/SPT.Server.Linux
-```
-
-The launcher's "Local Server" card turns ONLINE after ~40 s and stays usable.
-Details, screenshots and troubleshooting:
-[docs/en/dotnet-installer.md](docs/en/dotnet-installer.md).
-
-Play still runs the installer, because that is all the package contains — and it
-re-extracts 64.7 GB every time. One more script points Play at the SPT launcher:
-
-```sh
-scripts/spp-tarkov-play-target.sh "<game dir>" "<prefix>"
-```
-
-The Windows launcher under Wine stays white and the cursor disappears (WebView2
-+ D3D in a child window, Wine bug 58922). The package also ships
-`SPT.Launcher.Linux`; this script makes Play start that one natively:
-
-```sh
-scripts/spp-tarkov-linux-launcher.sh "<prefix>"
-```
-
-Co-op needs no extra install: the package ships Fika (server 2.4.0, client
-2.4.2). The host opens 6969/TCP and 25565/UDP and hosts the raid; the guest adds
-`https://<host>:6969` in the launcher and creates their own profile. Both
-checklists, the VPN/port-forwarding decision and troubleshooting:
-[docs/en/coop.md](docs/en/coop.md).
+| Document | Deutsch | Covers |
+|---|---|---|
+| [tarkov.md](docs/en/tarkov.md) | [tarkov.md](docs/de/tarkov.md) | SPP Tarkov from Play to the game, step by step |
+| [coop.md](docs/en/coop.md) | [coop.md](docs/de/coop.md) | Fika: host, guest, ports, troubleshooting |
+| [background.md](docs/en/background.md) | [hintergrund.md](docs/de/hintergrund.md) | how online-fix builds work, defect A/B, evidence |
 
 ---
 
 ## Repository layout
 
 ```
-README.md                          this page (English, default)
-README.de.md                       the same overview in German
-docs/en/                           root-cause, per-game, evidence, dotnet-installer, coop
-docs/de/                           German versions of the same five documents
-evidence/                          raw log excerpts 01–10, referenced by the docs
-scripts/fix-reference.sh           reference implementation of both online-fix fixes
-scripts/install-dotnet-runtime.sh  provisions .NET runtimes 10 into a prefix
-scripts/spp-tarkov-server.sh       starts the native SPT server (SPP Tarkov)
-scripts/spp-tarkov-play-target.sh  makes Play start the game instead of the installer
-scripts/spp-tarkov-linux-launcher.sh  makes Play start the native SPT launcher
-assets/before-after.svg            the pipeline diagram above
-assets/evidence.png                one-page evidence sheet (logs, before/after)
-assets/spp-tarkov-*.png            installer dialog, launcher and character screen
+README.md                             this page (English, default)
+README.de.md                          the same page in German
+docs/en/, docs/de/                    tarkov, coop, background — both languages
+evidence/                             raw log excerpts 01–10
+scripts/fix-reference.sh              both online-fix fixes (the umu wrapper)
+scripts/install-dotnet-runtime.sh     .NET runtimes 10 into a prefix
+scripts/spp-tarkov-play-target.sh     Play starts the game, not the installer
+scripts/spp-tarkov-linux-launcher.sh  Play starts the native SPT launcher
+scripts/spp-tarkov-server.sh          starts the native SPT server manually
+assets/                               screenshots and the pipeline diagram
 ```
-
----
-
-## Known limitation
-
-Steam only injects its overlay into games **it** launches. A game started by
-the launcher is tracked as AppID 480 but gets no `gameoverlayui` process, so
-Shift+Tab does nothing and overlay invites are unavailable. The Steam API
-itself works — friends list, lobbies, server browsers, direct joins from inside
-the game.
-
-If overlay invites matter, the clean solution is an opt-in **"Add to Steam"**
-action: create a non-Steam shortcut and let Steam start the game. The launcher
-already has the shortcut plumbing (`steam_shortcut_add`). That path needs the
-same five files in Steam's own compatdata prefix.
 
 ---
 
 ## Scope
 
-* Linux runtime only: umu-launcher + Proton. Tested with Anker Launcher 0.1.33,
-  umu-launcher 1.4.3, Proton Experimental (prefix `11.0-100`), native Steam,
-  CachyOS / KDE Wayland / NVIDIA.
-* No game files are modified, no DRM is circumvented. The fixes only prepare
-  the Wine prefix and set one Wine DLL override — the same thing Proton's own
+* Tested with Anker Launcher 0.1.30/0.1.33, umu-launcher 1.4.3, Proton
+  Experimental, native Steam, CachyOS / KDE Wayland / NVIDIA.
+* No game files are modified and no DRM is circumvented. The fixes only prepare
+  the Wine prefix and set one Wine DLL override — the same work Proton's own
   `proton` script does when it creates a prefix.
-* The report describes observed behaviour and a reproducible fix. It is not an
-  official AnkerGames statement.
-
----
+* This is an observation and a reproducible fix, not an official AnkerGames
+  statement.
 
 <div align="center">
 

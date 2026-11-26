@@ -1,6 +1,6 @@
 # SPP Tarkov co-op: server host and guest
 
-[← Overview](../../README.md) · [Tarkov fix](dotnet-installer.md) · [Evidence](evidence.md) · **Deutsch:** [Co-op](../de/coop.md)
+[← Overview](../../README.md) · [Tarkov guide](tarkov.md) · [Background](background.md) · **Deutsch:** [Co-op](../de/coop.md)
 
 SPP Tarkov ships **Fika**, the co-op mod for SPT. Nothing has to be installed:
 the server mod is in `SPT_Runtime/user/mods/fika-server` (2.4.0), the client
