@@ -87,6 +87,10 @@ After that the installer starts and the wizard runs normally:
 
 ![Wizard, second page](../../assets/spp-tarkov-wizard-2.png)
 
+Verified with Proton Experimental (wine-11.0): the wizard runs without
+`DOTNET_EnableWriteXorExecute=0`. That variable is only a fallback if the app
+host aborts with `Failed to create CoreCLR`.
+
 Keep the default install directory — it is the game folder the launcher
 manages. The wizard unpacks `Data.bin` (~64.7 GB) and creates `Launcher.exe`,
 which the launcher starts afterwards. `Launcher.exe` and the SPT server are

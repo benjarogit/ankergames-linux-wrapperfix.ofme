@@ -88,6 +88,10 @@ Danach startet der Installer und der Assistent läuft normal:
 
 ![Assistent, zweite Seite](../../assets/spp-tarkov-wizard-2.png)
 
+Verifiziert mit Proton Experimental (wine-11.0): Der Assistent läuft ohne
+`DOTNET_EnableWriteXorExecute=0`. Die Variable ist nur ein Fallback, falls der
+App-Host mit `Failed to create CoreCLR` abbricht.
+
 Das Standard-Installationsverzeichnis beibehalten — es ist der Spielordner, den
 der Launcher verwaltet. Der Assistent entpackt `Data.bin` (~64,7 GB) und legt
 `Launcher.exe` an, die der Launcher danach startet. `Launcher.exe` und der
