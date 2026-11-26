@@ -93,6 +93,11 @@ unter Wine kann er sein TLS-Zertifikat nicht erzeugen. Beides löst das
 Provisioning der offiziellen Runtime-Zips plus der native `SPT.Server.Linux` —
 siehe [dotnet-installer.md](dotnet-installer.md).
 
+Play startet außerdem den Installer statt des Spiels, weil das Paket nichts
+anderes enthält. Der Assistent entpackt bei jedem Lauf 64,7 GB neu;
+`spp-tarkov-play-target.sh` richtet Play stattdessen auf den installierten
+SPT-Launcher.
+
 ### Call of Duty: Modern Warfare II (2522)
 
 Ein Goldberg-/Offline-Build (`steam_settings/`, `steam_api64.dll`,

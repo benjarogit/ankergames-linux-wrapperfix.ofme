@@ -110,7 +110,7 @@ Four documents, English and German. They build on each other:
 | Root cause | [root-cause.md](docs/en/root-cause.md) | [ursachen.md](docs/de/ursachen.md) | how the builds work, defect A and B, reference code, verification |
 | Per game | [per-game.md](docs/en/per-game.md) | [spiele.md](docs/de/spiele.md) | the five-game matrix, marker layouts, titles that only look affected |
 | Evidence | [evidence.md](docs/en/evidence.md) | [evidenz.md](docs/de/evidenz.md) | annotated log excerpts 01–08 and the evidence sheet |
-| Tarkov fix | [dotnet-installer.md](docs/en/dotnet-installer.md) | [dotnet-installer.md](docs/de/dotnet-installer.md) | .NET runtimes for prefix 3089, the native SPT server, WebView2 flags |
+| Tarkov fix | [dotnet-installer.md](docs/en/dotnet-installer.md) | [dotnet-installer.md](docs/de/dotnet-installer.md) | .NET runtimes, native SPT server, WebView2 flags, Play target |
 
 Read the first three in order. The Tarkov fix is independent of the online-fix
 defects.
@@ -148,6 +148,13 @@ The launcher's "Local Server" card turns ONLINE after ~40 s and stays usable.
 Details, screenshots and troubleshooting:
 [docs/en/dotnet-installer.md](docs/en/dotnet-installer.md).
 
+Play still runs the installer, because that is all the package contains — and it
+re-extracts 64.7 GB every time. One more script points Play at the SPT launcher:
+
+```sh
+scripts/spp-tarkov-play-target.sh "<game dir>" "<prefix>"
+```
+
 ---
 
 ## Repository layout
@@ -161,6 +168,7 @@ evidence/                          raw log excerpts 01–08, referenced by the d
 scripts/fix-reference.sh           reference implementation of both online-fix fixes
 scripts/install-dotnet-runtime.sh  provisions .NET runtimes 10 into a prefix
 scripts/spp-tarkov-server.sh       starts the native SPT server (SPP Tarkov)
+scripts/spp-tarkov-play-target.sh  makes Play start the game instead of the installer
 assets/before-after.svg            the pipeline diagram above
 assets/evidence.png                one-page evidence sheet (logs, before/after)
 assets/spp-tarkov-*.png            installer dialog and setup wizard (before/after)

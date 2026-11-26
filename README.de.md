@@ -111,7 +111,7 @@ Vier Dokumente, auf Englisch und Deutsch. Sie bauen aufeinander auf:
 | Ursachen | [root-cause.md](docs/en/root-cause.md) | [ursachen.md](docs/de/ursachen.md) | Funktionsweise, Defekt A und B, Referenzcode, Verifikation |
 | Spiele | [per-game.md](docs/en/per-game.md) | [spiele.md](docs/de/spiele.md) | Matrix der fünf Spiele, Marker-Layouts, nur scheinbar betroffene Titel |
 | Evidenz | [evidence.md](docs/en/evidence.md) | [evidenz.md](docs/de/evidenz.md) | kommentierte Log-Auszüge 01–08 und das Evidenzblatt |
-| Tarkov-Fix | [dotnet-installer.md](docs/en/dotnet-installer.md) | [dotnet-installer.md](docs/de/dotnet-installer.md) | .NET-Runtimes für Prefix 3089, der native SPT-Server, WebView2-Flags |
+| Tarkov-Fix | [dotnet-installer.md](docs/en/dotnet-installer.md) | [dotnet-installer.md](docs/de/dotnet-installer.md) | .NET-Runtimes, nativer SPT-Server, WebView2-Flags, Play-Ziel |
 
 Die ersten drei in dieser Reihenfolge lesen. Der Tarkov-Fix ist unabhängig von
 den Online-Fix-Defekten.
@@ -149,6 +149,14 @@ Nach etwa 40 s steht die Karte „Local Server“ auf ONLINE und bleibt nutzbar.
 Details, Screenshots und Fehlersuche:
 [docs/de/dotnet-installer.md](docs/de/dotnet-installer.md).
 
+Play startet weiterhin den Installer, weil das Paket nichts anderes enthält — und
+entpackt damit jedes Mal 64,7 GB neu. Ein weiteres Skript richtet Play auf den
+SPT-Launcher:
+
+```sh
+scripts/spp-tarkov-play-target.sh "<Spielordner>" "<prefix>"
+```
+
 ---
 
 ## Aufbau des Repos
@@ -162,6 +170,7 @@ evidence/                          rohe Log-Auszüge 01–08, auf die die Docs v
 scripts/fix-reference.sh           Referenz-Implementierung beider Online-Fix-Fixes
 scripts/install-dotnet-runtime.sh  installiert .NET-Runtimes 10 in einen Prefix
 scripts/spp-tarkov-server.sh       startet den nativen SPT-Server (SPP Tarkov)
+scripts/spp-tarkov-play-target.sh  macht Play zum Spielstart statt zum Installer
 assets/before-after.svg            das Diagramm oben
 assets/evidence.png                Evidenzblatt (Logs, vorher/nachher)
 assets/spp-tarkov-*.png            Installer-Dialog und Setup-Assistent (vorher/nachher)

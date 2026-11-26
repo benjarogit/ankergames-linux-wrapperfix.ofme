@@ -215,6 +215,36 @@ for ~20 s, hover states follow the pointer, and clicks land where the pointer
 is. Scrolling feels slightly softer — acceptable for a launcher. Set
 `SPP_KEEP_WEBVIEW_GPU=1` to compare with the default path.
 
+### Play keeps opening the installer
+
+`Play` in AnkerGames starts `SPP_Tarkov_Installer.exe`, not the game. That is how
+the package is built: the archive holds the installer plus `Data.bin`, and the
+file `Run SPP_Tarkov_Installer and follow the instructions.txt` is what the
+launcher derives its target from. After a successful install nothing tells the
+launcher what to start, so every Play re-runs the wizard and re-extracts
+64.7 GB.
+
+The launcher only accepts executables inside the game folder, so the fix mirrors
+the SPT launcher into it:
+
+```sh
+scripts/spp-tarkov-play-target.sh \
+  "/mnt/daten/Games/AnkerGames/Games/Escape from Tarkov-3089" \
+  "/mnt/daten/Games/AnkerGames/Games/Prefixes/3089"
+```
+
+It copies the 246 KB stub `Launcher.exe` (the one the installer drops next to
+the game) into the game folder, links `SPT_Runtime` to the installed one, and
+records `Launcher.exe` as this game's executable in
+`~/.config/net.ankergames.launcher/library.json` (backup included). Close
+AnkerGames first — it rewrites that file on start.
+
+Play then goes launcher → `Launcher.exe` → `SPT_Runtime\SPT.Launcher.exe` → the
+game. The stub takes no arguments; it resolves `SPT_Runtime` relative to itself.
+
+Manual alternative: AnkerGames → the game → launch settings → choose
+`Launcher.exe`.
+
 ---
 
 ## Manual alternative
