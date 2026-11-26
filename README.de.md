@@ -4,7 +4,7 @@
 
 **Online-Fix-Builds erreichen Steam nicht. Zwei Fixes im Launcher lösen das.**
 
-[English](README.md) · [Ursachen](docs/de/ursachen.md) · [Spiele](docs/de/spiele.md) · [Evidenz](docs/de/evidenz.md) · [Tarkov-Fix](docs/de/dotnet-installer.md)
+[English](README.md) · [Ursachen](docs/de/ursachen.md) · [Spiele](docs/de/spiele.md) · [Evidenz](docs/de/evidenz.md) · [Tarkov-Fix](docs/de/dotnet-installer.md) · [Co-op](docs/de/coop.md)
 
 ![Plattform](https://img.shields.io/badge/plattform-Linux-0f172a?style=flat-square)
 ![Laufzeit](https://img.shields.io/badge/laufzeit-umu%20%2B%20Proton-0f172a?style=flat-square)
@@ -110,8 +110,9 @@ Vier Dokumente, auf Englisch und Deutsch. Sie bauen aufeinander auf:
 |---|---|---|---|
 | Ursachen | [root-cause.md](docs/en/root-cause.md) | [ursachen.md](docs/de/ursachen.md) | Funktionsweise, Defekt A und B, Referenzcode, Verifikation |
 | Spiele | [per-game.md](docs/en/per-game.md) | [spiele.md](docs/de/spiele.md) | Matrix der fünf Spiele, Marker-Layouts, nur scheinbar betroffene Titel |
-| Evidenz | [evidence.md](docs/en/evidence.md) | [evidenz.md](docs/de/evidenz.md) | kommentierte Log-Auszüge 01–09 und das Evidenzblatt |
+| Evidenz | [evidence.md](docs/en/evidence.md) | [evidenz.md](docs/de/evidenz.md) | kommentierte Log-Auszüge 01–10 und das Evidenzblatt |
 | Tarkov-Fix | [dotnet-installer.md](docs/en/dotnet-installer.md) | [dotnet-installer.md](docs/de/dotnet-installer.md) | .NET-Runtimes, nativer SPT-Server und -Launcher, Play-Ziel |
+| Co-op | [coop.md](docs/en/coop.md) | [coop.md](docs/de/coop.md) | Fika: Host-Checkliste, Mitspieler-Checkliste, Ports, Fehlersuche |
 
 Die ersten drei in dieser Reihenfolge lesen. Der Tarkov-Fix ist unabhängig von
 den Online-Fix-Defekten.
@@ -165,6 +166,12 @@ Der Windows-Launcher unter Wine bleibt weiß und der Cursor verschwindet
 scripts/spp-tarkov-linux-launcher.sh "<prefix>"
 ```
 
+Co-op braucht keine Extra-Installation: Das Paket bringt Fika mit (Server 2.4.0,
+Client 2.4.2). Der Host öffnet 6969/TCP und 25565/UDP und hostet den Raid; der
+Mitspieler trägt `https://<Host>:6969` im Launcher ein und legt ein eigenes
+Profil an. Beide Checklisten, die Entscheidung VPN/Port-Forwarding und die
+Fehlersuche: [docs/de/coop.md](docs/de/coop.md).
+
 ---
 
 ## Aufbau des Repos
@@ -172,9 +179,9 @@ scripts/spp-tarkov-linux-launcher.sh "<prefix>"
 ```
 README.md                          diese Übersicht (Englisch, Standard)
 README.de.md                       dieselbe Übersicht auf Deutsch
-docs/en/                           root-cause, per-game, evidence, dotnet-installer
-docs/de/                           deutsche Fassung derselben vier Dokumente
-evidence/                          rohe Log-Auszüge 01–09, auf die die Docs verweisen
+docs/en/                           root-cause, per-game, evidence, dotnet-installer, coop
+docs/de/                           deutsche Fassung derselben fünf Dokumente
+evidence/                          rohe Log-Auszüge 01–10, auf die die Docs verweisen
 scripts/fix-reference.sh           Referenz-Implementierung beider Online-Fix-Fixes
 scripts/install-dotnet-runtime.sh  installiert .NET-Runtimes 10 in einen Prefix
 scripts/spp-tarkov-server.sh       startet den nativen SPT-Server (SPP Tarkov)

@@ -1,0 +1,95 @@
+# SPP Tarkov (3089) — Fika co-op: what the package already ships
+
+Same prefix, native SPT server on `0.0.0.0:6969`, Proton Experimental
+(wine-11.0). SPT 4.1.2.
+
+SPP Tarkov already contains both halves of Fika. Only the network path between
+the two players is missing; `docs/en/coop.md` covers that.
+
+## 1 · Server mod loaded
+
+`user/logs/spt/spt20261126.log`:
+
+```
+[SPTarkov.Server.Modding.ModValidator] Mod: server Version: 2.4.0 (GUID: Fika | targets SPT: >=4.1.0) von: Fika geladen
+[FikaServer.OnLoad.FikaPreLoad] [Fika Server] Overriding SPT configuration
+```
+
+The mod lives in `SPT_Runtime/user/mods/fika-server` (`FikaServer.dll`,
+`assets/configs/fika.jsonc`).
+
+## 2 · Server listens on all interfaces
+
+```
+$ ss -ltn | grep 6969
+LISTEN 0 512 0.0.0.0:6969 0.0.0.0:*
+```
+
+Fika overrides the SPT address, so `SPT_Data/configs/http.json`
+(`"ip": "127.0.0.1"`) does not have to be edited:
+
+```jsonc
+// user/mods/fika-server/assets/configs/fika.jsonc
+"server": {
+  "SPT": {
+    "http": {
+      "ip": "0.0.0.0",
+      "port": 6969,
+      "backendIp": "0.0.0.0",
+      "backendPort": 6969
+    }
+  }
+}
+```
+
+## 3 · Client plugin loaded
+
+`BepInEx/LogOutput.log`:
+
+```
+[Info   :   BepInEx] Loading [Fika.Core 2.4.2]
+[Info   : Fika.Core] Fika is loaded! Running version: 2.4.2.0
+[Info   : Fika.Core] Server version check passed. Expected: >2.4.0, received: 2.4.0
+[Info   : Fika.Core] [LogValues]: Received NatPunchServer config from server:
+[Info   : Fika.Core] [LogValues]: Enable: False
+[Info   : Fika.Core] [LogValues]: Port: 6790
+[Info   : Fika.Core] [LogValues]: [Config] SharedQuestProgression: True
+```
+
+The client plugin lives in `BepInEx/plugins/Fika` (`Fika.Core.dll`).
+
+## 4 · The server answers from the network, not only localhost
+
+From the same PC, addressed by its LAN IP (`192.168.178.23`) instead of
+`127.0.0.1`:
+
+```
+$ curl -k -o /dev/null -w '%{http_code}\n' https://192.168.178.23:6969/launcher/v2/ping
+200
+```
+
+SPT 4.1 logs in by **profile name**, not by account password. The launcher sends
+a zlib-compressed `PUT /launcher/v2/login`:
+
+```
+PUT https://192.168.178.23:6969/launcher/v2/login
+body (zlib): {"username":"Test"}
+response:    {"Response":true}
+```
+
+The same request with a name that has no profile (`spt`, `test`) returns
+`{"Response":false}`. That is what the guest does after creating a profile; no
+server password is involved.
+
+## 5 · Ports and firewall
+
+```
+$ systemctl is-active ufw
+active
+$ sudo ufw status
+6969/tcp                   ALLOW       Anywhere                   # SPP Tarkov SPT backend
+25565/udp                  ALLOW       Anywhere                   # SPP Tarkov Fika in-raid
+```
+
+Fika needs `6969/TCP` (backend) and `25565/UDP` (in-raid networking). The
+router/port-forwarding or VPN part is described in `docs/en/coop.md`.

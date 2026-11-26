@@ -1,6 +1,6 @@
 # Spiel-Matrix
 
-[← Übersicht](../../README.de.md) · [Ursachen](ursachen.md) · [Spiele](spiele.md) · [Evidenz](evidenz.md) · [Tarkov-Fix](dotnet-installer.md) · **English:** [Per game](../en/per-game.md)
+[← Übersicht](../../README.de.md) · [Ursachen](ursachen.md) · [Spiele](spiele.md) · [Evidenz](evidenz.md) · [Tarkov-Fix](dotnet-installer.md) · [Co-op](coop.md) · **English:** [Per game](../en/per-game.md)
 
 Alle fünf Spiele wurden mit demselben Launcher-Build (0.1.33), derselben
 Laufzeit (umu 1.4.3 + Proton Experimental `11.0-100`) und ihren vorhandenen
@@ -82,8 +82,9 @@ und genau das, was Koop mit Windows-Spielern möglich macht.
 Kein Steam-Titel. Das Paket ist **SPP Tarkov** — ein Singleplayer-Projekt
 (`SPP_Tarkov_Installer.exe` + `Data.bin`, „Complete SPP Tarkov client & local
 server environment“). Es ist keine Steam-Client-API beteiligt, also greift
-keiner der Fixes. Koop bräuchte einen separaten Community-Mod (z. B. Fika) und
-einen gehosteten Server. Die Katalog-Metadaten (`multiplayer: false`,
+keiner der Fixes. Co-op ist bereits enthalten: Das Paket bringt Fika mit
+(Server 2.4.0, Client 2.4.2). Checklisten für Host und Mitspieler:
+[coop.md](coop.md). Die Katalog-Metadaten (`multiplayer: false`,
 `online_fix: false`) bilden das bereits ab.
 
 Es hat aber eigene Linux-Blocker: Der Installer ist eine framework-abhängige

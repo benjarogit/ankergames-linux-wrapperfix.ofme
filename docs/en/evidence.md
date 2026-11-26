@@ -1,6 +1,6 @@
 # Evidence
 
-[← Overview](../../README.md) · [Root cause](root-cause.md) · [Per game](per-game.md) · [Evidence](evidence.md) · [Tarkov fix](dotnet-installer.md) · **Deutsch:** [Evidenz](../de/evidenz.md)
+[← Overview](../../README.md) · [Root cause](root-cause.md) · [Per game](per-game.md) · [Evidence](evidence.md) · [Tarkov fix](dotnet-installer.md) · [Co-op](coop.md) · **Deutsch:** [Evidenz](../de/evidenz.md)
 
 Everything here was captured on 2026-11-25 with Anker Launcher 0.1.33,
 umu-launcher 1.4.3 and Proton Experimental (`11.0-100`). Paths are the real
@@ -134,3 +134,16 @@ The launcher config, the game process, the client's backend requests and why
 the WebView2 arguments cannot help are in
 [`09-spp-tarkov-linux-launcher.txt`](../../evidence/09-spp-tarkov-linux-launcher.txt),
 context in [dotnet-installer.md](dotnet-installer.md).
+
+## 10 · SPP Tarkov: Fika co-op is already included
+
+```
+Mod: server Version: 2.4.0 (GUID: Fika | targets SPT: >=4.1.0) von: Fika geladen
+LISTEN 0 512 0.0.0.0:6969 0.0.0.0:*
+[Info : Fika.Core] Server version check passed. Expected: >2.4.0, received: 2.4.0
+```
+
+The package ships the Fika server mod (2.4.0) and the client plugin (2.4.2).
+The server listens on all interfaces, and a login by profile name works over
+the LAN IP. Host and guest checklists: [coop.md](coop.md). Excerpts:
+[`10-fika-coop.txt`](../../evidence/10-fika-coop.txt).

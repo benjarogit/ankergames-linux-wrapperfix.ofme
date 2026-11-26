@@ -1,6 +1,6 @@
 # SPP Tarkov: Der Installer braucht die .NET Desktop Runtime
 
-[← Übersicht](../../README.de.md) · [Ursachen](ursachen.md) · [Spiele](spiele.md) · [Evidenz](evidenz.md) · [Tarkov-Fix](dotnet-installer.md) · **English:** [.NET installer](../en/dotnet-installer.md)
+[← Übersicht](../../README.de.md) · [Ursachen](ursachen.md) · [Spiele](spiele.md) · [Evidenz](evidenz.md) · [Tarkov-Fix](dotnet-installer.md) · [Co-op](coop.md) · **English:** [.NET installer](../en/dotnet-installer.md)
 
 **Spiel:** Escape from Tarkov (3089) — SPP Tarkov, das Singleplayer-Projekt
 **Launcher:** Anker Launcher 0.1.33, umu-launcher 1.4.3, Proton Experimental
@@ -281,6 +281,10 @@ den Windows-Launcher unter Wine; der braucht Windows-Pfade in
 Der Launcher erreicht die Charaktererstellung, das Spiel läuft:
 
 ![Escape from Tarkov Charaktererstellung](../../assets/spp-tarkov-character.png)
+
+Co-op braucht keine Extra-Installation: Das Paket bringt Fika mit (Server
+2.4.0, Client 2.4.2). Checklisten für Host und Mitspieler, Ports und
+Fehlersuche: [coop.md](coop.md).
 
 ---
 

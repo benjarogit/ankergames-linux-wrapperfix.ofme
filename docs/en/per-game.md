@@ -1,6 +1,6 @@
 # Per-game matrix
 
-[← Overview](../../README.md) · [Root cause](root-cause.md) · [Per game](per-game.md) · [Evidence](evidence.md) · [Tarkov fix](dotnet-installer.md) · **Deutsch:** [Spiele](../de/spiele.md)
+[← Overview](../../README.md) · [Root cause](root-cause.md) · [Per game](per-game.md) · [Evidence](evidence.md) · [Tarkov fix](dotnet-installer.md) · [Co-op](coop.md) · **Deutsch:** [Spiele](../de/spiele.md)
 
 All five games below were tested with the same launcher build (0.1.33), the same
 runtime (umu 1.4.3 + Proton Experimental `11.0-100`) and their existing prefixes.
@@ -80,9 +80,9 @@ behaviour on Windows and is what makes co-op with Windows players possible.
 Not a Steam title. The package is **SPP Tarkov** — a single-player project
 (`SPP_Tarkov_Installer.exe` + `Data.bin`, "Complete SPP Tarkov client & local
 server environment"). No Steam client API is involved, so neither fix applies.
-Co-op would require a separate community mod (e.g. Fika) and a hosted server.
-Catalog metadata (`multiplayer: false`, `online_fix: false`) already reflects
-this.
+Co-op is already included: the package ships Fika (server 2.4.0, client 2.4.2).
+Host and guest checklists: [coop.md](coop.md). Catalog metadata
+(`multiplayer: false`, `online_fix: false`) already reflects this.
 
 It does have its own Linux blockers: the installer is a framework-dependent
 .NET 10 WPF app and the prefix has no `Microsoft.WindowsDesktop.App`. After that

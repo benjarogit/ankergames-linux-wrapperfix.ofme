@@ -4,7 +4,7 @@
 
 **Online-fix builds never reach Steam. Two launcher-side fixes make them work.**
 
-[Deutsch](README.de.md) · [Root cause](docs/en/root-cause.md) · [Per game](docs/en/per-game.md) · [Evidence](docs/en/evidence.md) · [Tarkov fix](docs/en/dotnet-installer.md)
+[Deutsch](README.de.md) · [Root cause](docs/en/root-cause.md) · [Per game](docs/en/per-game.md) · [Evidence](docs/en/evidence.md) · [Tarkov fix](docs/en/dotnet-installer.md) · [Co-op](docs/en/coop.md)
 
 ![platform](https://img.shields.io/badge/platform-Linux-0f172a?style=flat-square)
 ![runtime](https://img.shields.io/badge/runtime-umu%20%2B%20Proton-0f172a?style=flat-square)
@@ -109,8 +109,9 @@ Four documents, English and German. They build on each other:
 |---|---|---|---|
 | Root cause | [root-cause.md](docs/en/root-cause.md) | [ursachen.md](docs/de/ursachen.md) | how the builds work, defect A and B, reference code, verification |
 | Per game | [per-game.md](docs/en/per-game.md) | [spiele.md](docs/de/spiele.md) | the five-game matrix, marker layouts, titles that only look affected |
-| Evidence | [evidence.md](docs/en/evidence.md) | [evidenz.md](docs/de/evidenz.md) | annotated log excerpts 01–09 and the evidence sheet |
+| Evidence | [evidence.md](docs/en/evidence.md) | [evidenz.md](docs/de/evidenz.md) | annotated log excerpts 01–10 and the evidence sheet |
 | Tarkov fix | [dotnet-installer.md](docs/en/dotnet-installer.md) | [dotnet-installer.md](docs/de/dotnet-installer.md) | .NET runtimes, native SPT server and launcher, Play target |
+| Co-op | [coop.md](docs/en/coop.md) | [coop.md](docs/de/coop.md) | Fika: host checklist, guest checklist, ports, troubleshooting |
 
 Read the first three in order. The Tarkov fix is independent of the online-fix
 defects.
@@ -163,6 +164,12 @@ The Windows launcher under Wine stays white and the cursor disappears (WebView2
 scripts/spp-tarkov-linux-launcher.sh "<prefix>"
 ```
 
+Co-op needs no extra install: the package ships Fika (server 2.4.0, client
+2.4.2). The host opens 6969/TCP and 25565/UDP and hosts the raid; the guest adds
+`https://<host>:6969` in the launcher and creates their own profile. Both
+checklists, the VPN/port-forwarding decision and troubleshooting:
+[docs/en/coop.md](docs/en/coop.md).
+
 ---
 
 ## Repository layout
@@ -170,9 +177,9 @@ scripts/spp-tarkov-linux-launcher.sh "<prefix>"
 ```
 README.md                          this page (English, default)
 README.de.md                       the same overview in German
-docs/en/                           root-cause, per-game, evidence, dotnet-installer
-docs/de/                           German versions of the same four documents
-evidence/                          raw log excerpts 01–09, referenced by the docs
+docs/en/                           root-cause, per-game, evidence, dotnet-installer, coop
+docs/de/                           German versions of the same five documents
+evidence/                          raw log excerpts 01–10, referenced by the docs
 scripts/fix-reference.sh           reference implementation of both online-fix fixes
 scripts/install-dotnet-runtime.sh  provisions .NET runtimes 10 into a prefix
 scripts/spp-tarkov-server.sh       starts the native SPT server (SPP Tarkov)

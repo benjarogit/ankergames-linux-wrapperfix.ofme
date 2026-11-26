@@ -1,6 +1,6 @@
 # Ursachen — warum Online-Fix-Builds unter Linux scheitern
 
-[← Übersicht](../../README.de.md) · [Ursachen](ursachen.md) · [Spiele](spiele.md) · [Evidenz](evidenz.md) · [Tarkov-Fix](dotnet-installer.md) · **English:** [Root cause](../en/root-cause.md)
+[← Übersicht](../../README.de.md) · [Ursachen](ursachen.md) · [Spiele](spiele.md) · [Evidenz](evidenz.md) · [Tarkov-Fix](dotnet-installer.md) · [Co-op](coop.md) · **English:** [Root cause](../en/root-cause.md)
 
 **Getestet mit:** Anker Launcher 0.1.33 (`AnkerLauncher-0.1.30-x86_64.AppImage`)
 **Laufzeit:** umu-launcher 1.4.3, Proton Experimental (Prefix `11.0-100`), natives Steam
