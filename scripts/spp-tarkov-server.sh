@@ -83,8 +83,10 @@ dotnet_root="${SPT_DOTNET_ROOT:-$HOME/.local/share/spt-dotnet}"
 
 mkdir -p "$(dirname "$log")"
 echo "starting: $runtime/SPT.Server.Linux (log: $log)"
-( cd "$runtime" && DOTNET_ROOT="$dotnet_root" setsid ./SPT.Server.Linux \
-    >>"$log" 2>&1 </dev/null & )
+cd "$runtime" || die "cannot enter $runtime"
+# setsid -f: own session (survives the launcher) and no lingering parent shell.
+DOTNET_ROOT="$dotnet_root" setsid -f ./SPT.Server.Linux >>"$log" 2>&1 </dev/null
+cd - >/dev/null 2>&1 || true
 
 i=0
 while [ "$i" -lt "$wait_s" ]; do
