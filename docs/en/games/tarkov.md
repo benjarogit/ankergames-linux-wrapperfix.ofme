@@ -88,6 +88,8 @@ the launcher. The launcher can take around 40 seconds to appear.
 
 Fika is included in SPP Tarkov. Use the same package on both PCs. The
 instructions cover hosting and joining on Windows and Linux.
+Choose the [same home network](#same-home-network) or
+[two homes](#two-homes-using-tailscale) setup.
 
 **Test status:** The native SPT server loaded Fika 2.4.0 and accepted a profile
 login through its LAN address from the same Linux PC. The package includes
@@ -129,15 +131,55 @@ name without a server password, so restrict access to the server.
 3. Sign in with your own profile. For a VPN, select the shared address in the
    launcher if needed.
 
-### Address for the guest
+### Same home network
 
-- **Same LAN:** use the server PC's LAN IPv4 address. On Windows, use
-  `ipconfig`. On Linux, use `ip -4 addr`.
-- **Different networks:** join the same private VPN and use the server PC's
-  VPN IPv4 address. Anyone hosting a raid over the VPN should press **F12**
-  in the game and set **Force IP** and **Force Bind IP** under **Fika.Core →
-  Network** to their own VPN IP. Leave UPnP and NAT Punching off for this setup.
-  [Project Fika's VPN guide](https://wiki.project-fika.com/hosting-a-fika-server/host-using-a-vpn).
+You can play without a VPN or an additional tool. Start the SPT server on the
+host PC. In the SPT Launcher, the guest enters the host's LAN IPv4 address with
+`:6969`, for example `192.168.1.20:6969`. On the host, use `ipconfig` on
+Windows or `ip -4 addr` on Linux to find the address.
+
+### Two homes using Tailscale
+
+Tailscale connects your two PCs over a private virtual network. This setup
+requires no router port forwarding. Radmin VPN provides a Windows client and is
+an option for two Windows PCs. For a Linux host and Windows guest, this guide
+uses Tailscale. [Radmin system requirements](https://www.radmin-vpn.com/help/).
+
+1. **Both players install Tailscale** and sign in with their own accounts.
+   On Windows, use the [Tailscale installer](https://tailscale.com/docs/install/windows).
+   On [other Linux distributions](https://tailscale.com/docs/install/linux),
+   follow the relevant installation steps. On CachyOS and Arch Linux:
+
+   ```sh
+   sudo pacman -S tailscale
+   sudo systemctl enable --now tailscaled
+   sudo tailscale up
+   ```
+
+   Open the link printed in the terminal and sign in.
+2. **The host shares their gaming PC.** In the
+   [Tailscale Machines list](https://login.tailscale.com/admin/machines),
+   choose **… → Share → Copy invite link** on the gaming PC. Send the link
+   privately to the guest, who opens it and accepts the share with their own
+   account. Both players keep Tailscale connected while playing.
+   [Tailscale device sharing](https://tailscale.com/docs/features/sharing).
+3. **The guest connects in SPT.** The host starts SPP Tarkov and waits for
+   **ONLINE**. The guest uses the shared host's Tailscale IPv4 address with
+   `:6969`. On the host, `tailscale ip -4` prints its Tailscale IPv4. The
+   guest adds the address under **ADD NEW SERVER** and signs in with their own
+   profile.
+4. **The host configures Fika.** On the same PC as the SPT server, open
+   **F12 → Fika.Core → Network** in the game. Set **Force IP** and
+   **Force Bind IP** to the host's own Tailscale IPv4. Leave **UPnP** and
+   **NAT Punching** off. The host selects **Host Raid** and the guest selects
+   **Join**. [Fika network settings](https://wiki.project-fika.com/faqandguides).
+
+Project Fika also documents router port forwarding for separate networks.
+Tailscale keeps the server accessible over the private network. Joining from a
+second PC over Tailscale has yet to be verified with this package.
+[Project Fika's hosting options](https://wiki.project-fika.com/hosting-a-fika-server).
+
+### Verify the connection
 
 Share the chosen address, port `6969` and package version with the guest. From
 the guest PC, open `https://<address>:6969/launcher/v2/ping` or run the

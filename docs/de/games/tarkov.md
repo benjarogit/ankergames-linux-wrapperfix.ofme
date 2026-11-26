@@ -89,6 +89,8 @@ Launcher erscheint, kann es rund 40 Sekunden dauern.
 
 Fika ist in SPP Tarkov enthalten. Nutzt auf beiden PCs dasselbe Paket. Die
 Anleitung deckt das Hosten und Beitreten unter Windows und Linux ab.
+Spielt ihr im [selben Heimnetz](#im-selben-heimnetz) oder in
+[zwei Haushalten](#zwei-haushalte-mit-tailscale)?
 
 **Teststand:** Der native SPT-Server hat Fika 2.4.0 geladen und eine
 Profilanmeldung über seine LAN-Adresse vom selben Linux-PC angenommen. Der
@@ -131,16 +133,56 @@ ohne Serverpasswort. Beschränkt daher den Zugriff auf den Server.
 3. Mit eigenem Profil anmelden. Beim Hosten über VPN bei Bedarf die gemeinsame
    Serveradresse im Launcher wählen.
 
-### Adresse für den Mitspieler
+### Im selben Heimnetz
 
-- **Gleiches LAN:** Die LAN-IPv4-Adresse des Server-PCs verwenden. Unter Windows
-  zeigt `ipconfig` die Adresse an, unter Linux `ip -4 addr`.
-- **Verschiedene Netze:** Beide treten demselben privaten VPN bei und nutzen
-  die VPN-IPv4-Adresse des Server-PCs. Wer den Raid über VPN hostet, drückt im
-  Spiel **F12** und setzt unter **Fika.Core → Network** die Optionen
-  **Force IP** und **Force Bind IP** auf die eigene VPN-IP. UPnP und NAT
-  Punching bleiben dabei deaktiviert.
-  [VPN-Anleitung von Project Fika](https://wiki.project-fika.com/hosting-a-fika-server/host-using-a-vpn).
+Ihr braucht kein VPN und kein zusätzliches Tool. Startet auf dem Host-PC den
+SPT-Server. Der Mitspieler trägt im SPT-Launcher die LAN-IPv4-Adresse des
+Hosts mit `:6969` ein, zum Beispiel `192.168.1.20:6969`. Die Adresse findest
+du auf dem Host unter Windows mit `ipconfig`, unter Linux mit `ip -4 addr`.
+
+### Zwei Haushalte mit Tailscale
+
+Tailscale verbindet eure beiden PCs über ein privates virtuelles Netzwerk.
+Bei dieser Variante braucht ihr keine Portfreigaben am Router. Radmin VPN
+bietet einen Windows-Client und kommt für zwei Windows-PCs infrage. Für einen
+Linux-Host und einen Windows-Mitspieler verwendet diese Anleitung Tailscale.
+[Radmin-Systemanforderungen](https://www.radmin-vpn.com/help/).
+
+1. **Beide installieren Tailscale** und melden sich mit ihrem eigenen Konto an.
+   Unter Windows den [Tailscale-Installer](https://tailscale.com/docs/install/windows)
+   verwenden. Für [andere Linux-Distributionen](https://tailscale.com/docs/install/linux)
+   gelten die dortigen Installationsschritte. Unter CachyOS und Arch Linux:
+
+   ```sh
+   sudo pacman -S tailscale
+   sudo systemctl enable --now tailscaled
+   sudo tailscale up
+   ```
+
+   Den Link aus der Ausgabe im Browser öffnen und anmelden.
+2. **Der Host gibt seinen Spiel-PC frei.** In der
+   [Tailscale-Geräteliste](https://login.tailscale.com/admin/machines)
+   beim Spiel-PC **… → Share → Copy invite link** wählen. Den Link privat
+   an den Mitspieler geben. Der Mitspieler öffnet ihn und nimmt die Freigabe
+   mit seinem eigenen Konto an. Beide lassen Tailscale beim Spielen verbunden.
+   [Tailscale-Gerätefreigabe](https://tailscale.com/docs/features/sharing).
+3. **Der Mitspieler verbindet sich in SPT.** Der Host startet SPP Tarkov und
+   wartet auf **ONLINE**. Der Mitspieler nimmt die Tailscale-IPv4 des
+   freigegebenen Hosts und ergänzt `:6969`. Die eigene Tailscale-IPv4 kann
+   der Host mit `tailscale ip -4` anzeigen. Der Mitspieler fügt die Adresse
+   unter **ADD NEW SERVER** hinzu und meldet sich mit einem eigenen Profil an.
+4. **Der Host richtet Fika ein.** Auf demselben PC wie der SPT-Server im
+   Spiel **F12 → Fika.Core → Network** öffnen. **Force IP** und
+   **Force Bind IP** auf die eigene Tailscale-IPv4 setzen. **UPnP** und
+   **NAT Punching** bleiben aus. Der Host klickt **Host Raid**, der
+   Mitspieler klickt **Join**. [Fika-Netzwerkeinstellungen](https://wiki.project-fika.com/faqandguides).
+
+Fika dokumentiert für getrennte Netze auch Router-Portweiterleitung. Mit
+Tailscale bleibt der Server im privaten Netz erreichbar. Ein Test des Beitritts
+über Tailscale mit einem zweiten PC steht für dieses Paket noch aus.
+[Hosting-Varianten von Project Fika](https://wiki.project-fika.com/hosting-a-fika-server).
+
+### Verbindung prüfen
 
 Dem Mitspieler die Adresse, Port `6969` und die Paketversion geben. Auf dem
 Mitspieler-PC `https://<Adresse>:6969/launcher/v2/ping` öffnen oder den
