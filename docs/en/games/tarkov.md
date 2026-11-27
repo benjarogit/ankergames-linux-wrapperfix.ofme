@@ -46,8 +46,20 @@ terminal in the extracted folder. If the prefix does not exist yet, click
 
 2. If the package is freshly downloaded, press **Play** and finish the wizard
    once. The wizard unpacks around 65 GB. Then close AnkerGames.
-3. Install the [umu wrapper](../../../README.md#the-common-fix) if it is
-   missing. The native launcher also needs GTK and WebKitGTK. Download
+3. The native Tarkov launcher uses an umu wrapper. Keep an existing
+   wrapper at `~/.local/bin/umu-run`, or use these commands to create a
+   minimal wrapper for Tarkov.
+
+   ```sh
+   mkdir -p ~/.local/bin
+   if [ ! -e ~/.local/bin/umu-run ] && [ ! -L ~/.local/bin/umu-run ]; then
+     printf '%s\n' '#!/bin/sh' 'exec /usr/bin/umu-run "$@"' > ~/.local/bin/umu-run
+     chmod +x ~/.local/bin/umu-run
+   fi
+   ```
+
+   Make sure the AnkerGames `PATH` lists `~/.local/bin` before `/usr/bin`.
+   The native launcher needs GTK and WebKitGTK. Download
    [Microsoft's dotnet-install script](https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-install-script)
    and run these commands using the path where you saved it:
 

@@ -7,10 +7,21 @@
 | Store-AppID | 872670 |
 | Fix-Layout | A — ersetzte `steam_api64.dll` (Original als `steam_api64.of`) |
 | Marker | `OnlineFix.ini`, Tiefe 8 |
-| Braucht | **nur Fix A** |
-| Ergebnis | `[AppId: 872670] Client API initialized 1` |
+| Auf 0.1.33 und älter | **nur Fix A** |
+| Ergebnis mit Wrapper | `[AppId: 872670] Client API initialized 1` |
 
-## Was du siehst
+## Was du tust
+
+1. Aktualisiere Anker Launcher auf **0.1.34 oder neuer**.
+2. Starte natives Steam und öffne das Spiel über **Play** in AnkerGames.
+3. Prüfe das Ergebnis unten. Auf 0.1.33 und älter gibt es den
+   [Referenz-Wrapper](../../../README.de.md#der-gemeinsame-fix).
+
+AnkerGames hat die Korrekturen für 0.1.34 bestätigt. Der Nachtest dieses
+Titels steht noch aus. Die Prüfung unten zeigt den früheren Test mit dem
+Wrapper. [Details zu 0.1.34](../wie-es-funktioniert.md#anker-launcher-0134).
+
+## Fehlerbild auf älteren Versionen
 
 ```
 Failed to load original steamclient. Error code: 126
@@ -18,16 +29,6 @@ Failed to load original steamclient. Error code: 126
 
 Das Spiel schließt vor dem Hauptmenü. Die fünf Steam-Client-Dateien fehlen im
 Prefix, weil die Marker-Suche des Launchers vor Tiefe 8 aufhört.
-
-## Was du tust
-
-Einmal den gemeinsamen Wrapper installieren — er platziert die Dateien für alle
-Online-Fix-Spiele:
-
-[Der gemeinsame Fix →](../../../README.de.md#der-gemeinsame-fix)
-
-Sonst ist nichts spielspezifisch. Kein `winmm`-Override nötig: Dieser Build
-ersetzt `steam_api64.dll` selbst.
 
 ## Prüfen
 
@@ -45,7 +46,7 @@ Steam trackt den Prozess als AppID 480. Schließt das Spiel weiterhin, prüfe
 ## Warum
 
 Die Fix-DLL löst Valves echte `steamclient64.dll` über die Registry des Prefixes
-auf. Die Suche des Launchers erreicht
+auf. Die frühere Suche des Launchers erreichte
 `5K/WindowsNoEditor/Engine/Binaries/ThirdParty/Steamworks/Steamv151/Win64/OnlineFix.ini`
 (8 Ordner tief) nicht und kopiert deshalb nichts. Fehler 126 ist
 `ERROR_MOD_NOT_FOUND`.

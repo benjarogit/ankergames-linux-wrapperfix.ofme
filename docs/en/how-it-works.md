@@ -5,9 +5,21 @@
 **Reported against:** Anker Launcher 0.1.30/0.1.33, umu-launcher 1.4.3, Proton
 Experimental (`11.0-100`), native Steam, CachyOS / KDE Wayland / NVIDIA.
 
-This page is the *why*. The fixes are in the [README](../../README.md#the-common-fix).
+## Anker Launcher 0.1.34
 
----
+AnkerGames confirmed the causes of both Linux issues. The earlier general
+scan stopped after three directory levels. In 0.1.34, the launcher also checks
+`Engine/Binaries/ThirdParty/Steamworks` directly so it can find deeper markers
+and provision the Steam client files in the prefix. For detected online-fix
+builds, the launcher appends `winmm=n,b` to existing `WINEDLLOVERRIDES`.
+AnkerGames says builds without an online fix use the same launch path as
+before. [Official launcher download](https://ankergames.net/launcher).
+
+**Test status:** The evidence below documents the earlier failure and the
+reference wrapper on 0.1.30/0.1.33. All five titles still need retesting on
+0.1.34. Check that the launch log shows `/usr/bin/umu-run` during the retest.
+A prefix already populated by the wrapper cannot prove that 0.1.34 placed the
+files. Use a separate test prefix for that check where available.
 
 ## 1 · How these builds work
 
@@ -54,8 +66,8 @@ The game closes before the main menu.
 
 ### Cause
 
-The launcher detects online-fix builds by scanning the game folder for marker
-files. The marker list extracted from the launcher binary:
+Before 0.1.34, the launcher detected online-fix builds by scanning the game
+folder for marker files. The marker list extracted from the launcher binary:
 
 ```
 steam_appid.txt  steam_settings  steam_emu.ini  ColdClientLoader.ini
@@ -63,9 +75,8 @@ cream_api.ini    OnlineFix.ini   realappid      SmartSteamEmu.ini
 SteamConfig.ini  CPY.ini
 ```
 
-`union-crax.ini` is not in that list, and the scan does not reach markers deep
-below the game root. That matches a depth limit in the folder walk — depth 4 is
-found, depth 7–8 is not.
+`union-crax.ini` was absent from the extracted list. The deeper Steamworks
+markers were outside the earlier general scan.
 
 | Game | Marker | Depth | Launcher result |
 |------|--------|-------|-----------------|
@@ -80,7 +91,7 @@ UE4/UE5 builds keep the Steamworks DLLs in
 puts the fix there is 7–8 levels deep. The catalog already knows better: all of
 these games are flagged `online_fix: true`.
 
-### Fix
+### Original proposals for the launcher
 
 * **Preferred:** use the catalog flag — if `online_fix` is true, place the five
   files. No filesystem guessing.
@@ -112,10 +123,9 @@ the DLL search order, so the proxy loads. Under Wine the default for `winmm` is
 `builtin, native`, so the proxy is skipped — the original `steam_api64.dll` runs
 and `SteamAPI_Init` fails with AppId 0.
 
-The launcher never sets any `WINEDLLOVERRIDES`; the binary contains no such
-string at all. These builds therefore cannot work on Linux as shipped.
+The inspected 0.1.30/0.1.33 launcher lacked the override on these launches.
 
-### Fix
+### Reference wrapper approach
 
 When a native `winmm.dll` exists under the game folder (depth ≤ 4 is enough in
 practice), append the override:
@@ -167,12 +177,12 @@ needed.
   successful Steam client handshake.
 
 AppID 480 is Spacewar, Valve's public test app. The fix spoofs it so Steam allows
-the client API without owning the game — identical to the behaviour on Windows,
-and the reason co-op with Windows players works.
+the client API to initialize. The process log records Steam tracking. A
+Windows/Linux co-op join requires its own test.
 
-### Reproduction
+### Historical reproduction on 0.1.30/0.1.33
 
-1. Delete the prefix of game 2006 (`…/Prefixes/2006`).
+1. Use a fresh test prefix for SCP 5K (2006).
 2. Start it from the launcher → `Failed to load original steamclient. Error code: 126`.
 3. Copy the five files into the prefix → the game starts and Steam initialises.
 4. Start game 3645 (files present) → `[AppId: 0] Client API initialized 0`.

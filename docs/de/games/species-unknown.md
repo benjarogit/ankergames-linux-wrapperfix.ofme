@@ -7,19 +7,24 @@
 | Store-App-ID | 2747330 |
 | Aufbau | B · nativer `winmm.dll`-Proxy |
 | Marker | `OnlineFix.ini`, Tiefe 4 |
-| Benötigt | **Fix B** |
-| Ergebnis | Fix-DLLs geladen, Steam erfasst den Spielprozess unter App-ID 480 |
-
-## Was du siehst
-
-Das Spiel startet. Freunde und Lobbys fehlen. Der Build schreibt kein
-brauchbares Unreal-Engine-Log für die Steam-Initialisierung.
+| Auf 0.1.33 und älter | **Fix B** |
+| Ergebnis mit Wrapper | Fix-DLLs geladen, Steam erfasst den Spielprozess unter App-ID 480 |
 
 ## Vorgehen
 
-Installiere den [gemeinsamen Wrapper](../../../README.de.md#der-gemeinsame-fix).
-Er setzt `WINEDLLOVERRIDES=winmm=n,b`. Der Launcher findet den Marker in
-Tiefe 4 und legt die fünf Steam-Client-Dateien bereits ab.
+1. Aktualisiere Anker Launcher auf **0.1.34 oder neuer**.
+2. Starte natives Steam und öffne das Spiel über **Play** in AnkerGames.
+3. Prüfe das Ergebnis unten. Auf 0.1.33 und älter gibt es den
+   [Referenz-Wrapper](../../../README.de.md#der-gemeinsame-fix).
+
+AnkerGames hat die Korrekturen für 0.1.34 bestätigt. Der Nachtest dieses
+Titels steht noch aus. Die Prüfung unten zeigt den früheren Test mit dem
+Wrapper. [Details zu 0.1.34](../wie-es-funktioniert.md#anker-launcher-0134).
+
+## Fehlerbild auf älteren Versionen
+
+Das Spiel startet. Freunde und Lobbys fehlen. Der Build schreibt kein
+brauchbares Unreal-Engine-Log für die Steam-Initialisierung.
 
 ## Prüfung
 

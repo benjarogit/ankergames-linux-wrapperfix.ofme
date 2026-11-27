@@ -7,26 +7,28 @@
 | Store AppID | 872670 |
 | Fix layout | A — replaced `steam_api64.dll` (original kept as `steam_api64.of`) |
 | Marker | `OnlineFix.ini`, depth 8 |
-| Needs | **fix A** only |
-| Result | `[AppId: 872670] Client API initialized 1` |
+| On 0.1.33 and earlier | **fix A** only |
+| Result with wrapper | `[AppId: 872670] Client API initialized 1` |
 
-## What you see
+## What to do
+
+1. Update Anker Launcher to **0.1.34 or later**.
+2. Start native Steam, then open the game with **Play** in AnkerGames.
+3. Check the result below. On 0.1.33 and earlier, use the
+   [reference wrapper](../../../README.md#the-common-fix).
+
+AnkerGames confirmed the corrections in 0.1.34. This title still needs
+a retest. The checks below come from the earlier wrapper test.
+[Details for 0.1.34](../how-it-works.md#anker-launcher-0134).
+
+## Symptoms on older versions
 
 ```
 Failed to load original steamclient. Error code: 126
 ```
 
 The game closes before the main menu. The five Steam client files are missing in
-the prefix, because the launcher's marker scan stops before depth 8.
-
-## What to do
-
-Install the shared wrapper once — it places the files for every online-fix game:
-
-[The common fix →](../../../README.md#the-common-fix)
-
-Nothing else is specific to SCP 5K. No `winmm` override is needed: this build
-replaces `steam_api64.dll` itself.
+the prefix, because the launcher's earlier marker scan missed the deeper directory.
 
 ## Verify
 
@@ -38,13 +40,13 @@ LogOnline: STEAM: Steam User is subscribed 1
 LogOnline: STEAM: [AppId: 872670] Client API initialized 1
 ```
 
-Steam tracks the process as AppID 480. If the game still closes, check
+This build uses `steam_api64.dll` as its proxy. Steam tracks the process as AppID 480. If the game still closes, check
 `<prefix>/drive_c/Program Files (x86)/Steam/` for the five files.
 
 ## Why
 
 The fix DLL resolves Valve's real `steamclient64.dll` through the prefix
-registry. The launcher's scan looks for marker files but does not reach
+registry. The earlier launcher scan missed
 `5K/WindowsNoEditor/Engine/Binaries/ThirdParty/Steamworks/Steamv151/Win64/OnlineFix.ini`
 (8 folders deep), so it never copies the files. Error 126 is
 `ERROR_MOD_NOT_FOUND`.

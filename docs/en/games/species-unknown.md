@@ -7,21 +7,24 @@
 | Store AppID | 2747330 |
 | Fix layout | B — native `winmm.dll` proxy |
 | Marker | `OnlineFix.ini`, depth 4 |
-| Needs | **fix B** only |
-| Result | fix DLLs mapped, Steam tracks the game as AppID 480 |
-
-## What you see
-
-The game starts, but Steam is not initialised — no friends, no lobbies. The build
-writes no usable UE log, so the missing Steam features are the symptom.
+| On 0.1.33 and earlier | **fix B** only |
+| Result with wrapper | fix DLLs mapped, Steam tracks the game as AppID 480 |
 
 ## What to do
 
-Install the shared wrapper once — it sets `WINEDLLOVERRIDES=winmm=n,b`:
+1. Update Anker Launcher to **0.1.34 or later**.
+2. Start native Steam, then open the game with **Play** in AnkerGames.
+3. Check the result below. On 0.1.33 and earlier, use the
+   [reference wrapper](../../../README.md#the-common-fix).
 
-[The common fix →](../../../README.md#the-common-fix)
+AnkerGames confirmed the corrections in 0.1.34. This title still needs
+a retest. The checks below come from the earlier wrapper test.
+[Details for 0.1.34](../how-it-works.md#anker-launcher-0134).
 
-The five Steam client files are already placed: the marker is at depth 4.
+## Symptoms on older versions
+
+The game starts, but Steam is not initialised — no friends, no lobbies. The build
+writes no usable UE log, so the missing Steam features are the symptom.
 
 ## Verify
 

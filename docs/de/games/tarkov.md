@@ -48,9 +48,21 @@ anlegt. Schließe anschließend den .NET-Hinweis.
 2. Wenn du das Paket gerade heruntergeladen hast, drücke **Play** und führe
    den Assistenten einmal aus. Er entpackt rund 65 GB. Schließe danach
    AnkerGames.
-3. Installiere den [umu-Wrapper](../../../README.de.md#der-gemeinsame-fix),
-   falls er fehlt. Der native Launcher braucht außerdem GTK und WebKitGTK.
-   Lade [Microsofts dotnet-install-Skript](https://learn.microsoft.com/de-de/dotnet/core/tools/dotnet-install-script)
+3. Der native Tarkov-Start braucht einen umu-Wrapper. Verwende einen
+   vorhandenen Wrapper unter `~/.local/bin/umu-run` weiter oder lege mit
+   diesem Befehl bei Bedarf einen einfachen Wrapper für Tarkov an.
+
+   ```sh
+   mkdir -p ~/.local/bin
+   if [ ! -e ~/.local/bin/umu-run ] && [ ! -L ~/.local/bin/umu-run ]; then
+     printf '%s\n' '#!/bin/sh' 'exec /usr/bin/umu-run "$@"' > ~/.local/bin/umu-run
+     chmod +x ~/.local/bin/umu-run
+   fi
+   ```
+
+   Stelle sicher, dass im `PATH` von AnkerGames `~/.local/bin` vor `/usr/bin`
+   steht. Der native Launcher braucht GTK und WebKitGTK. Lade
+   [Microsofts dotnet-install-Skript](https://learn.microsoft.com/de-de/dotnet/core/tools/dotnet-install-script)
    herunter und verwende in den folgenden Befehlen den Pfad zur Skriptdatei:
 
    ```sh

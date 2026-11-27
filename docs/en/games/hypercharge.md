@@ -7,10 +7,21 @@
 | Store AppID | 523660 |
 | Fix layout | B — native `winmm.dll` proxy |
 | Marker | `OnlineFix.ini`, depth 4 |
-| Needs | **fix B** only |
-| Result | `[AppId: 523660] Client API initialized 1` |
+| On 0.1.33 and earlier | **fix B** only |
+| Result with wrapper | `[AppId: 523660] Client API initialized 1` |
 
-## What you see
+## What to do
+
+1. Update Anker Launcher to **0.1.34 or later**.
+2. Start native Steam, then open the game with **Play** in AnkerGames.
+3. Check the result below. On 0.1.33 and earlier, use the
+   [reference wrapper](../../../README.md#the-common-fix).
+
+AnkerGames confirmed the corrections in 0.1.34. This title still needs
+a retest. The checks below come from the earlier wrapper test.
+[Details for 0.1.34](../how-it-works.md#anker-launcher-0134).
+
+## Symptoms on older versions
 
 The game starts, but Steam is not initialised:
 
@@ -20,15 +31,6 @@ LogOnline: STEAM: [AppId: 0] Client API initialized 0
 ```
 
 No friends list, no lobbies.
-
-## What to do
-
-Install the shared wrapper once — it sets `WINEDLLOVERRIDES=winmm=n,b`:
-
-[The common fix →](../../../README.md#the-common-fix)
-
-The five Steam client files are already placed here: the marker sits at depth 4,
-so the launcher's own scan finds it. Only the DLL override was missing.
 
 ## Verify
 

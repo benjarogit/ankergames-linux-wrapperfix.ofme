@@ -7,23 +7,25 @@
 | Store-AppID | 1721110 |
 | Fix-Layout | B — nativer `winmm.dll`-Proxy |
 | Marker | `OnlineFix.ini`, Tiefe 4 |
-| Braucht | **nur Fix B** |
-| Ergebnis | Fix-DLLs im Prozess, Steam trackt das Spiel als AppID 480 |
+| Auf 0.1.33 und älter | **nur Fix B** |
+| Ergebnis mit Wrapper | Fix-DLLs im Prozess, Steam trackt das Spiel als AppID 480 |
 
-## Was du siehst
+## Was du tust
+
+1. Aktualisiere Anker Launcher auf **0.1.34 oder neuer**.
+2. Starte natives Steam und öffne das Spiel über **Play** in AnkerGames.
+3. Prüfe das Ergebnis unten. Auf 0.1.33 und älter gibt es den
+   [Referenz-Wrapper](../../../README.de.md#der-gemeinsame-fix).
+
+AnkerGames hat die Korrekturen für 0.1.34 bestätigt. Der Nachtest dieses
+Titels steht noch aus. Die Prüfung unten zeigt den früheren Test mit dem
+Wrapper. [Details zu 0.1.34](../wie-es-funktioniert.md#anker-launcher-0134).
+
+## Fehlerbild auf älteren Versionen
 
 Das Spiel startet, aber Steam wird nicht initialisiert — keine Freunde, keine
 Lobbys. Der Build schreibt kein nutzbares UE-Log, das Symptom sind die fehlenden
 Steam-Funktionen.
-
-## Was du tust
-
-Einmal den gemeinsamen Wrapper installieren — er setzt
-`WINEDLLOVERRIDES=winmm=n,b`:
-
-[Der gemeinsame Fix →](../../../README.de.md#der-gemeinsame-fix)
-
-Die fünf Steam-Client-Dateien sind schon vorhanden: Der Marker liegt auf Tiefe 4.
 
 ## Prüfen
 

@@ -7,28 +7,44 @@
 | Game | Guide |
 | --- | --- |
 | [SPP Tarkov (3089)](docs/en/games/tarkov.md) | Setup, solo play and Fika co-op |
-| [SCP 5K (2006)](docs/en/games/scp-5k.md) | Missing Steam files · Fix A |
-| [HYPERCHARGE: Unboxed (3645)](docs/en/games/hypercharge.md) | Steam initialization · Fix B |
-| [Abyssus (2902)](docs/en/games/abyssus.md) | Steam initialization · Fix B |
-| [The Ascent (4013)](docs/en/games/the-ascent.md) | Steam files and initialization · Fixes A and B |
-| [Species: Unknown (4035)](docs/en/games/species-unknown.md) | Steam initialization · Fix B |
+| [SCP 5K (2006)](docs/en/games/scp-5k.md) | Missing Steam files |
+| [HYPERCHARGE: Unboxed (3645)](docs/en/games/hypercharge.md) | Steam initialization |
+| [Abyssus (2902)](docs/en/games/abyssus.md) | Steam initialization |
+| [The Ascent (4013)](docs/en/games/the-ascent.md) | Steam files and initialization |
+| [Species: Unknown (4035)](docs/en/games/species-unknown.md) | Steam initialization |
+
+## Online-fix from Anker Launcher 0.1.34
+
+Update [Anker Launcher](https://ankergames.net/launcher) to **0.1.34 or later**,
+start native Steam, and try launching the game through AnkerGames with the
+launcher fix first. The AnkerGames team confirmed both corrections for 0.1.34.
+The existing evidence is from 0.1.30/0.1.33 with the reference wrapper.
+Retesting all five games on 0.1.34 is still pending.
+[What changed](docs/en/how-it-works.md#anker-launcher-0134).
+
+[SPP Tarkov](docs/en/games/tarkov.md) has its own .NET and native SPT launcher
+setup.
 
 ## The common fix
 
-The `umu-run` wrapper supplies missing Steam client files in the Wine prefix
-(fix A) and enables the game's bundled native `winmm.dll` where present (fix B).
-Run these commands from the repository with native Steam installed:
+<details>
+<summary>Reference wrapper for older launcher versions</summary>
+
+The wrapper supplies missing Steam client files in the Wine prefix (fix A) and
+enables the bundled native `winmm.dll` (fix B). It is a fallback for 0.1.33
+and earlier. Run these commands from the repo folder.
 
 ```sh
 mkdir -p ~/.local/bin
-cp scripts/fix-reference.sh ~/.local/bin/umu-run
+cp -i scripts/fix-reference.sh ~/.local/bin/umu-run
 chmod +x ~/.local/bin/umu-run
 ```
 
-Ensure AnkerGames sees `~/.local/bin` before `/usr/bin` in its `PATH`, then
-launch the game as usual. If you also use the Tarkov launcher fix, run
-`scripts/spp-tarkov-linux-launcher.sh "<prefix>"` after copying the wrapper.
-Copying the wrapper again replaces its Tarkov block.
+Ensure AnkerGames sees `~/.local/bin` before `/usr/bin` in its `PATH`. If you
+replace an existing wrapper, rerun the Tarkov setup command if you need it to
+restore the native launch block.
+
+</details>
 
 ## Repository and scope
 

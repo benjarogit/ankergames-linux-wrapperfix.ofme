@@ -5,10 +5,22 @@
 **Gemeldet gegen:** Anker Launcher 0.1.30/0.1.33, umu-launcher 1.4.3, Proton
 Experimental (`11.0-100`), nativer Steam, CachyOS / KDE Wayland / NVIDIA.
 
-Diese Seite erklärt das *Warum*. Die Fixes stehen im
-[README](../../README.de.md#der-gemeinsame-fix).
+## Anker Launcher 0.1.34
 
----
+AnkerGames hat die Ursache beider Linux-Probleme bestätigt. Die frühere
+allgemeine Suche endete nach drei Verzeichnisebenen. Seit 0.1.34 durchsucht der
+Launcher zusätzlich `Engine/Binaries/ThirdParty/Steamworks` gezielt. So kann er
+die tieferen Marker erkennen und die Steam-Client-Dateien im Prefix ablegen.
+Für erkannte Online-Fix-Builds hängt der Launcher `winmm=n,b` an bestehende
+`WINEDLLOVERRIDES` an. Builds ohne Online-Fix folgen laut AnkerGames dem
+bisherigen Startweg. [Offizieller Launcher-Download](https://ankergames.net/launcher).
+
+**Teststand:** Die folgenden Belege beschreiben den früheren Fehler und die
+Tests mit dem Referenz-Wrapper auf 0.1.30/0.1.33. Die fünf Titel sind auf 0.1.34
+noch nicht nachgetestet. Bei einem Nachtest prüfen, dass das Startlog
+`/usr/bin/umu-run` zeigt. Bereits vom Wrapper befüllte Prefixes liefern keinen
+eindeutigen Beleg für die automatische Platzierung. Dafür einen separaten
+Test-Prefix verwenden, falls verfügbar.
 
 ## 1 · So funktionieren diese Builds
 
@@ -55,8 +67,8 @@ Das Spiel schließt vor dem Hauptmenü.
 
 ### Ursache
 
-Der Launcher erkennt Online-Fix-Builds, indem er den Spielordner nach
-Marker-Dateien durchsucht. Die aus dem Launcher-Binary extrahierte Liste:
+Vor 0.1.34 erkannte der Launcher Online-Fix-Builds anhand einer Suche nach
+Marker-Dateien im Spielordner. Die aus dem Launcher-Binary extrahierte Liste:
 
 ```
 steam_appid.txt  steam_settings  steam_emu.ini  ColdClientLoader.ini
@@ -64,9 +76,8 @@ cream_api.ini    OnlineFix.ini   realappid      SmartSteamEmu.ini
 SteamConfig.ini  CPY.ini
 ```
 
-`union-crax.ini` fehlt in dieser Liste, und die Suche erreicht Marker tief unter
-dem Spielordner nicht. Das passt zu einem Tiefenlimit im Verzeichnislauf — Tiefe
-4 wird gefunden, Tiefe 7–8 nicht.
+`union-crax.ini` fehlte in der ausgelesenen Liste. Die tieferen Marker
+unter Steamworks lagen außerhalb der früheren allgemeinen Suche.
 
 | Spiel | Marker | Tiefe | Ergebnis |
 |------|--------|-------|----------|
@@ -81,7 +92,7 @@ UE4/UE5-Builds halten die Steamworks-DLLs in
 jedem UE-Build 7–8 Ebenen tief. Der Katalog weiß es besser: Alle diese Spiele
 sind als `online_fix: true` markiert.
 
-### Fix
+### Ursprüngliche Vorschläge für den Launcher
 
 * **Bevorzugt:** das Katalog-Flag nutzen — bei `online_fix: true` die fünf
   Dateien platzieren. Kein Raten im Dateisystem.
@@ -115,11 +126,10 @@ ist die Vorgabe für `winmm` `builtin, native`, deshalb wird der Proxy
 übersprungen — die originale `steam_api64.dll` läuft, und `SteamAPI_Init`
 scheitert mit AppId 0.
 
-Der Launcher setzt nie `WINEDLLOVERRIDES`; das Binary enthält diesen String gar
-nicht. Diese Builds können unter Linux also nicht funktionieren, wie sie
-ausgeliefert werden.
+Im untersuchten Launcher-Binary fehlte der Override. Die Versionen
+0.1.30/0.1.33 setzten ihn bei diesen Starts nicht.
 
-### Fix
+### Ansatz des Referenz-Wrappers
 
 Wenn irgendwo unter dem Spielordner eine native `winmm.dll` liegt (Tiefe ≤ 4
 reicht praktisch), den Override anhängen:
@@ -172,12 +182,12 @@ sind nötig.
 
 AppID 480 ist Spacewar, Valves öffentliche Test-App. Der Fix spoofed sie, damit
 Steam die Client-API erlaubt, ohne das Spiel zu besitzen — identisch zum
-Verhalten unter Windows und der Grund, warum Co-op mit Windows-Spielern
-funktioniert.
+Verhalten wurde als Steam-Prozesserkennung protokolliert. Einen
+plattformübergreifenden Co-op-Beitritt belegt dieses Log nicht.
 
-### Reproduktion
+### Historische Reproduktion auf 0.1.30/0.1.33
 
-1. Prefix von Spiel 2006 löschen (`…/Prefixes/2006`).
+1. Einen frischen Test-Prefix für SCP 5K (2006) verwenden.
 2. Aus dem Launcher starten → `Failed to load original steamclient. Error code: 126`.
 3. Die fünf Dateien in den Prefix kopieren → das Spiel startet und Steam initialisiert.
 4. Spiel 3645 starten (Dateien vorhanden) → `[AppId: 0] Client API initialized 0`.
