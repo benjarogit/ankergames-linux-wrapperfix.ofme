@@ -15,11 +15,8 @@ builds, the launcher appends `winmm=n,b` to existing `WINEDLLOVERRIDES`.
 AnkerGames says builds without an online fix use the same launch path as
 before. [Official launcher download](https://ankergames.net/launcher).
 
-**Test status:** The evidence below documents the earlier failure and the
-reference wrapper on 0.1.30/0.1.33. All five titles still need retesting on
-0.1.34. Check that the launch log shows `/usr/bin/umu-run` during the retest.
-A prefix already populated by the wrapper cannot prove that 0.1.34 placed the
-files. Use a separate test prefix for that check where available.
+The sections below document the original failures, the reference wrapper,
+and the evidence collected on 0.1.30/0.1.33.
 
 ## 1 · How these builds work
 

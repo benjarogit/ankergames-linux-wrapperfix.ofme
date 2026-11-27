@@ -15,12 +15,8 @@ Für erkannte Online-Fix-Builds hängt der Launcher `winmm=n,b` an bestehende
 `WINEDLLOVERRIDES` an. Builds ohne Online-Fix folgen laut AnkerGames dem
 bisherigen Startweg. [Offizieller Launcher-Download](https://ankergames.net/launcher).
 
-**Teststand:** Die folgenden Belege beschreiben den früheren Fehler und die
-Tests mit dem Referenz-Wrapper auf 0.1.30/0.1.33. Die fünf Titel sind auf 0.1.34
-noch nicht nachgetestet. Bei einem Nachtest prüfen, dass das Startlog
-`/usr/bin/umu-run` zeigt. Bereits vom Wrapper befüllte Prefixes liefern keinen
-eindeutigen Beleg für die automatische Platzierung. Dafür einen separaten
-Test-Prefix verwenden, falls verfügbar.
+Die folgenden Abschnitte dokumentieren die ursprünglichen Fehler, den
+Referenz-Wrapper und die Messungen aus 0.1.30/0.1.33.
 
 ## 1 · So funktionieren diese Builds
 

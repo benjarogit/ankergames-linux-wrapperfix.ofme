@@ -12,14 +12,12 @@
 
 ## Was du tust
 
-1. Aktualisiere Anker Launcher auf **0.1.34 oder neuer**.
-2. Starte natives Steam und öffne das Spiel über **Play** in AnkerGames.
-3. Prüfe das Ergebnis unten. Auf 0.1.33 und älter gibt es den
-   [Referenz-Wrapper](../../../README.de.md#der-gemeinsame-fix).
+**Offiziell behoben in Anker Launcher 0.1.34.**
 
-AnkerGames hat die Korrekturen für 0.1.34 bestätigt. Der Nachtest dieses
-Titels steht noch aus. Die Prüfung unten zeigt den früheren Test mit dem
-Wrapper. [Details zu 0.1.34](../wie-es-funktioniert.md#anker-launcher-0134).
+1. Aktualisiere den [Anker Launcher](https://ankergames.net/launcher) auf **0.1.34 oder neuer**.
+2. Starte natives Steam und öffne das Spiel über **Play** in AnkerGames.
+
+[Details zu 0.1.34](../wie-es-funktioniert.md#anker-launcher-0134).
 
 ## Fehlerbild auf älteren Versionen
 

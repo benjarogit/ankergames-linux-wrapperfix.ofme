@@ -12,13 +12,11 @@
 
 ## What to do
 
-1. Update Anker Launcher to **0.1.34 or later**.
-2. Start native Steam, then open the game with **Play** in AnkerGames.
-3. Check the result below. On 0.1.33 and earlier, use the
-   [reference wrapper](../../../README.md#the-common-fix).
+**Officially fixed in Anker Launcher 0.1.34.**
 
-AnkerGames confirmed the corrections in 0.1.34. This title still needs
-a retest. The checks below come from the earlier wrapper test.
+1. Update [Anker Launcher](https://ankergames.net/launcher) to **0.1.34 or later**.
+2. Start native Steam, then open the game with **Play** in AnkerGames.
+
 [Details for 0.1.34](../how-it-works.md#anker-launcher-0134).
 
 ## Symptoms on older versions
